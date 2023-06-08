@@ -12,9 +12,10 @@ block main %}
   <div class="row outer-box border">
     <div class="row inner-box border text-center">
       {% if status=='success' %} {%for i in range(0, 1)%}
-      <div class="row table">
+      <div class="table">
         <table id="DataTable" class="cell-border" style="width: 100%">
           <thead>
+            <th>No.</th>
             {%for i in range(0, column|length)%}
             <th>{{column[i]}}</th>
             {%endfor%}
@@ -23,6 +24,7 @@ block main %}
           <tbody>
               {%for i in range(0, df_processed|length)%}
               <tr>
+                <td>{{i}}</td>
                 {%for j in range(0, df_processed[i]|length)%}
                 <td
                   {% if df_upload[i][j] != df_processed[i][j] %}
@@ -74,6 +76,9 @@ block main %}
     ordering: false,
     info: false,
     searching: false,
+    fixedColumns: {
+      left: 1,
+    },
   });
   $("#btn-submit").hide();
   $("#excel_file").change(function () {
