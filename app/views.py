@@ -53,7 +53,7 @@ def upload():
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'))
 
-            return render_template("public/index.html",feedback="Format file salah",status='success',filenamesuccess=fileNoExt+'.xlsx')
+            return render_template("public/index.html",feedback="",status='success',filenamesuccess=fileNoExt+'.xlsx')
 
             return [hists,request.files["excel_file"].filename]
 def update_nationality(x):
