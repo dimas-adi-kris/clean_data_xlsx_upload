@@ -1,0 +1,75 @@
+body {
+  font-family: "Montserrat", sans-serif;
+}
+.bg-custom-blue {
+  background-color: #cae9ff;
+  /* box-shadow: 1px solid #333333; */
+}
+
+.navbar-custom {
+  position: relative;
+  min-height: 50px;
+  margin-bottom: 20px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.346);
+}
+
+.outer-box {
+  background-color: #5fa8d3;
+}
+
+.inner-box {
+  margin: 5px;
+  background-color: #4e91b9;
+  border: dashed 2px white;
+  min-height: 50px;
+  padding-bottom: 20px;
+}
+
+.border {
+  border-radius: 5px;
+}
+
+.form-custom {
+  margin: auto;
+  width: 50%;
+  padding: 100px;
+}
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  background-color: white;
+  /* border: solid; */
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: inline-block;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.svg-doc-upload {
+  width: 50px;
+  height: 50px;
+}
+
+.image-doc-upload {
+  width: 50px;
+  height: 50px;
+}
+
+.fa-file-text-o {
+  font-size: 25px !important;
+}
+
+.text-input-file {
+  padding-left: 10px;
+}
+
+.btn-submit {
+  background-color: white;
+  /* border: solid; */
+  border-radius: 10px;
+  padding: 10px 70px;
+  border: white;
+}

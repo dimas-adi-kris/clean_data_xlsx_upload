@@ -1,0 +1,47 @@
+{% extends "public/template.html" %} {% block title %}Main App{% endblock %} {%
+block main %}
+<!--   Big container   -->
+<div class="container">
+  <div class="row text-center">
+    <h2>Excel dataset to Excel data unique</h2>
+    <h4>Get Unique on Every Column in an Excel File(s)</h4>
+    {% if feedback %}
+    <p class="text-danger">{{feedback}}</p>
+    {% endif %}
+  </div>
+  <div class="row outer-box border">
+    <div class="row inner-box border text-center">
+      <form
+        class="form-custom"
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <p id="filename"></p>
+        <label
+          class="custom-file-upload"
+          for="excel_file"
+          id="label-input-file"
+        >
+          <i class="fa fa-file-text-o" aria-hidden="true"></i>
+          <span class="text-input-file">Choose File</span>
+        </label>
+        <input type="file" id="excel_file" name="excel_file" />
+        <input type="submit" class="btn-submit" value="Start" id="btn-submit" />
+      </form>
+    </div>
+  </div>
+</div>
+<!--  big container -->
+
+{% endblock %} {% block script %}
+<script>
+  $("#btn-submit").hide();
+  $("#excel_file").change(function () {
+    let i = $("#excel_file")[0].files[0].name;
+    $("#filename").text(i);
+    $("#label-input-file").hide();
+    $("#btn-submit").show();
+  });
+</script>
+{% endblock %}
