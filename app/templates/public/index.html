@@ -11,7 +11,38 @@ block main %}
   </div>
   <div class="row outer-box border">
     <div class="row inner-box border text-center">
-      {% if status=='success' %} {% endif %}
+      {% if status=='success' %} {%for i in range(0, 1)%}
+      <div class="row table">
+        <table id="DataTable" class="cell-border" style="width: 100%">
+          <thead>
+            {%for i in range(0, column|length)%}
+            <th>{{column[i]}}</th>
+            {%endfor%}
+          </thead>
+          <!-- prettier-ignore -->
+          <tbody>
+              {%for i in range(0, df_processed|length)%}
+              <tr>
+                {%for j in range(0, df_processed[i]|length)%}
+                <td
+                  {% if df_upload[i][j] != df_processed[i][j] %}
+                  class="beda"
+                  {% endif %}
+                >
+                  {{df_processed[i][j]}} 
+                </td>
+                {%endfor%}
+              </tr>
+              {%endfor%}
+            </tbody>
+          {%endfor%}
+        </table>
+      </div>
+      <!-- <a
+          class="btn-submit"
+          href="{{url_for('static', filename=filenamesuccess)}}"
+        ></a> -->
+      {% else %}
       <form
         class="form-custom"
         action="/upload"
@@ -30,6 +61,7 @@ block main %}
         <input type="file" id="excel_file" name="excel_file" />
         <input type="submit" class="btn-submit" value="Start" id="btn-submit" />
       </form>
+      {% endif %}
     </div>
   </div>
 </div>
@@ -37,6 +69,12 @@ block main %}
 
 {% endblock %} {% block script %}
 <script>
+  $("#DataTable").DataTable({
+    paging: false,
+    ordering: false,
+    info: false,
+    searching: false,
+  });
   $("#btn-submit").hide();
   $("#excel_file").change(function () {
     let i = $("#excel_file")[0].files[0].name;

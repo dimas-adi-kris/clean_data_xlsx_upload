@@ -1,6 +1,7 @@
 import os,re
 import json
 import pandas as pd
+import numpy as np
 
 from app import app
 from flask import render_template, request, redirect, jsonify, make_response, send_file, send_from_directory, abort, url_for, session
@@ -21,28 +22,35 @@ def upload():
 
         if request.files:
             fileUpload = request.files["excel_file"]
+
             filename = fileUpload.filename
-            fileUpload.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
             ext = filename.split('.')[-1]
-            fileNoExt = filename.split('.')[:-1][0]
+            fileNoExt = filename.split('.')[:-1][0]+'-'+''.join(str(v) for v in np.random.randint(1, [3, 5, 10]).tolist())
+            filename = fileNoExt+'.'+ext
+
+            fileUpload.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+
             if ext == 'csv':
-                df = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+                df_old = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename),)
             elif ext in ['xlsx','xls']:
-                df = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+                df_old = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename), )
             else:
                 return render_template("public/index.html",feedback="Format file salah",status='danger')
-
+            df_old = df_old.fillna('')
+            df = df_old.copy()
             df = onlyNumbersOnStr(df,'NPWP')
             df['NPWP'] = df['NPWP'].apply(lambda x:x if len(x)==15 else False)
 
             df['Status Kawin'] = df['Status Kawin'].astype(str).apply(setStatusKawin)
-            df['KodePos'] = df['KodePos'].fillna(0).astype(int).astype(str).apply(lambda x: x if len(x)==5 else False)
+            df['KodePos'] = df['KodePos'].replace({'':0}).astype(int).astype(str).apply(lambda x: x if len(x)==5 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if len(x)>1 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if x[0] in ['1','2','3','4'] else False)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(lambda x: x if x.upper()=='INDONESIA' else False)
             df['Nama'] = uppercase_column(df['Nama'])
-            df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(cleanPhoneNumber)
             df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(remove_special_characters)
+            df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(cleanPhoneNumber)
+            df['TelpHP(62000000000000)'] = df['TelpHP(62000000000000)'].fillna('').astype(str).apply(cleanPhoneNumber)
+            df['TelpHP(62000000000000)'] = df['TelpHP(62000000000000)'].fillna('').astype(str).apply(remove_special_characters)
             df['Nama'] = df['Nama'].fillna('').astype(str).apply(remove_special_characters)
             df['Jen. Kelamin'] = df['Jen. Kelamin'].fillna('').astype(str).apply(gender)
             df['TanggalLahir'] = df['TanggalLahir'].fillna('').astype(str).apply(to_datetime)
@@ -52,10 +60,17 @@ def upload():
             df['Agama'] = df['Agama'].fillna('').astype(str).apply(agama)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'))
+            
 
-            return render_template("public/index.html",feedback="",status='success',filenamesuccess=fileNoExt+'.xlsx')
+            return render_template(
+                "public/index.html",
+                feedback="",
+                status='success',
+                column=df_old.columns,
+                df_upload=df_old.values.tolist(),
+                df_processed=df.values.tolist()
+                )
 
-            return [hists,request.files["excel_file"].filename]
 def update_nationality(x):
     if x.upper() == 'INDONESIA':
         return 'I : Indonesia'
@@ -76,7 +91,7 @@ def agama(x):
     elif x.lower() == 'konghucu':
         a = '7: KONGHUCU'
     else:
-        a = False
+        a = x
     return a
 def pendidikan(x):
     if x == 'SMA' or x == 'SMP':
@@ -133,7 +148,7 @@ def gender(x):
     elif x.lower() in ['wanita', 'w']:
         formatted_gender = 'W : Wanita'
     else:
-        formatted_gender = gender
+        formatted_gender = False
     return formatted_gender
 
 def to_datetime(x):

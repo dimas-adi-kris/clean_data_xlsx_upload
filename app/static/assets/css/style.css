@@ -23,6 +23,7 @@ body {
   border: dashed 2px white;
   min-height: 50px;
   padding-bottom: 20px;
+  overflow: auto;
 }
 
 .border {
@@ -72,4 +73,15 @@ input[type="file"] {
   border-radius: 10px;
   padding: 10px 70px;
   border: white;
+}
+
+.table {
+  size: 40%;
+}
+#DataTable {
+  background-color: rgb(223, 223, 223);
+}
+
+.beda {
+  background-color: red;
 }
