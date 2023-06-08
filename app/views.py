@@ -41,6 +41,9 @@ def upload():
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(lambda x: x if x.upper()=='INDONESIA' else False)
             df['Nama'] = uppercase_column(df['Nama'])
             df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(cleanPhoneNumber)
+            df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(remove_special_characters)
+            df['Nama'] = df['Nama'].fillna('').astype(str).apply(remove_special_characters)
+            df['Jen. Kelamin'] = df['Jen. Kelamin'].fillna('').astype(str).apply(gender)
 
             return [hists,request.files["excel_file"].filename]
 
@@ -68,3 +71,15 @@ def cleanPhoneNumber(x):
     else:
         x = False
     return x
+
+def remove_special_characters(x):
+    return ''.join(e for e in x if e.isalnum())
+
+def gender(x):
+    if x.lower() in ['pria', 'p']:
+        formatted_gender = 'P : Pria'
+    elif x.lower() in ['wanita', 'w']:
+        formatted_gender = 'W : Wanita'
+    else:
+        formatted_gender = gender
+    return formatted_gender
