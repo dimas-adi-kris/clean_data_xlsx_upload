@@ -40,7 +40,7 @@ def upload():
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if x[0] in ['1','2','3','4'] else False)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(lambda x: x if x.upper()=='INDONESIA' else False)
             df['Nama'] = uppercase_column(df['Nama'])
-            df['Nama'] = lowercase_column(df['Nama'])
+            df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(cleanPhoneNumber)
 
             return [hists,request.files["excel_file"].filename]
 
@@ -58,3 +58,13 @@ def uppercase_column(col):
 def lowercase_column(col):
     return col.fillna('').astype(str).str.lower()
 
+def cleanPhoneNumber(x):
+    if x.startswith('08'):
+        x = '628' + x[2:]
+    elif x.startswith('8'):
+        x = '628' + x[1:]
+    elif x.startswith('62'):
+        x = x
+    else:
+        x = False
+    return x
