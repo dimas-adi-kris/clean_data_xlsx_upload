@@ -49,13 +49,18 @@ def upload():
             df['Nama'] = uppercase_column(df['Nama'])
             df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(remove_special_characters)
             df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(cleanPhoneNumber)
-            df['TelpHP(62000000000000)'] = df['TelpHP(62000000000000)'].fillna('').astype(str).apply(cleanPhoneNumber)
             df['TelpHP(62000000000000)'] = df['TelpHP(62000000000000)'].fillna('').astype(str).apply(remove_special_characters)
+            df['TelpHP(62000000000000)'] = df['TelpHP(62000000000000)'].fillna('').astype(str).apply(cleanPhoneNumber)
             df['Nama'] = df['Nama'].fillna('').astype(str).apply(remove_special_characters)
             df['Jen. Kelamin'] = df['Jen. Kelamin'].fillna('').astype(str).apply(gender)
             df['TanggalLahir'] = df['TanggalLahir'].fillna('').astype(str).apply(to_datetime)
-            df['RT'] = df['RT'].fillna('').astype(str).apply(format_r)
-            df['RW'] = df['RW'].fillna('').astype(str).apply(format_r)
+            
+            df['RT'] = df['RT'].fillna('').astype(str)
+            df['RW'] = df['RW'].fillna('').astype(str)
+            df = onlyNumbersOnStr(df,'RT')
+            df = onlyNumbersOnStr(df,'RW')
+            df['RT'] = df['RT'].apply(format_r)
+            df['RW'] = df['RW'].apply(format_r)
             df['Pendidikan'] = df['Pendidikan'].fillna('').astype(str).apply(pendidikan)
             df['Agama'] = df['Agama'].fillna('').astype(str).apply(agama)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
@@ -68,7 +73,9 @@ def upload():
                 status='success',
                 column=df_old.columns,
                 df_upload=df_old.values.tolist(),
-                df_processed=df.values.tolist()
+                df_processed=df.values.tolist(),
+                filenamesuccess=fileNoExt+'.xlsx',
+                filenameoriginal=fileUpload.filename
                 )
 
 def update_nationality(x):
@@ -94,26 +101,26 @@ def agama(x):
         a = x
     return a
 def pendidikan(x):
-    if x == 'SMA' or x == 'SMP':
+    if x.upper().split(' ')[0] in ['SMA','SMP','SMAN','SLTA','SLTP','SMK','STM','SMU','SEKOLAH']:
         pend = '00: Tanpa Gelar'
-    elif x == 'd1':
+    elif x.upper() in 'D1':
         pend = '01: Diploma 1'
-    elif x == 'd2':
+    elif x.upper() in 'D2':
         pend = '02: Diploma 2'
-    elif x == 'd3':
+    elif x.upper() in ['D3', 'DIII']:
         pend = '03: Diploma 3'
-    elif x == 's1':
+    elif x.upper() in ['S1','STRATA 1']:
         pend = '04: S-1'
-    elif x == 's2':
+    elif x.upper() in ['S2','STRATA 2']:
         pend = '05: S-2'
-    elif x == 's3':
+    elif x.upper() in ['S3','STRATA 3']:
         pend = '06: S-3'
     else:
         pend = '99: Lainnya'
     return pend
 
 def format_r(x):
-    return x.zfill(3)
+    return f"'{x.zfill(3)}"
 
 def setStatusKawin(x):
     return 'B: BELUM KAWIN' if x.lower()=='belum' else 'D: KAWIN' if x.lower()=='kawin' else 'K: CERAI' if x.lower()=='cerai' else False
@@ -129,10 +136,10 @@ def lowercase_column(col):
     return col.fillna('').astype(str).str.lower()
 
 def cleanPhoneNumber(x):
-    if x.startswith('08'):
-        x = '628' + x[2:]
+    if x.startswith('0'):
+        x = "'62" + x[1:]
     elif x.startswith('8'):
-        x = '628' + x[1:]
+        x = "'628" + x[1:]
     elif x.startswith('62'):
         x = x
     else:
@@ -143,9 +150,9 @@ def remove_special_characters(x):
     return ''.join(e for e in x if e.isalnum())
 
 def gender(x):
-    if x.lower() in ['pria', 'p']:
+    if x.lower() in ['pria', 'p','laki','laki-laki']:
         formatted_gender = 'P : Pria'
-    elif x.lower() in ['wanita', 'w']:
+    elif x.lower() in ['wanita', 'w','cewek','perempuan']:
         formatted_gender = 'W : Wanita'
     else:
         formatted_gender = False
@@ -153,6 +160,6 @@ def gender(x):
 
 def to_datetime(x):
     try:
-        return pd.to_datetime(x).strftime('%Y%m%d')
+        return pd.to_datetime(x).strftime('%Y/%m/%d')
     except:
         return x

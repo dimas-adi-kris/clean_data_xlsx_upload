@@ -30,6 +30,10 @@ body {
   border-radius: 5px;
 }
 
+.m-5 {
+  margin: 25px;
+}
+
 .form-custom {
   margin: auto;
   width: 50%;
@@ -73,13 +77,14 @@ input[type="file"] {
   border-radius: 10px;
   padding: 10px 70px;
   border: white;
+  font-weight: bold;
 }
 
 .table {
   size: 40%;
 }
 #DataTable {
-  background-color: rgb(223, 223, 223);
+  background-color: rgb(255, 255, 255);
 }
 
 .beda {

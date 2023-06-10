@@ -3,13 +3,26 @@ block main %}
 <!--   Big container   -->
 <div class="container">
   <div class="row text-center">
-    <h2>Excel dataset to Excel data unique</h2>
-    <h4>Get Unique on Every Column in an Excel File(s)</h4>
+    <h2>Excel data cleaner</h2>
+    <h4>
+      Perbaiki data excel dari format format. Upload satu file excel dan temukan
+      perbedaannya
+    </h4>
     {% if feedback %}
     <p class="text-{{status}}">{{feedback}}</p>
+
     {% endif %}
   </div>
-  <div class="row outer-box border">
+  <div class="row outer-box border text-center">
+    {% if status=='success' %}
+    <div class="m-5">
+      <a
+        class="btn-submit"
+        href="{{url_for('static', filename=filenamesuccess)}}"
+        >Download File</a
+      >
+    </div>
+    {% endif %}
     <div class="row inner-box border text-center">
       {% if status=='success' %} {%for i in range(0, 1)%}
       <div class="table">
@@ -31,7 +44,12 @@ block main %}
                   class="beda"
                   {% endif %}
                 >
-                  {{df_processed[i][j]}} 
+                <p style="font-weight: bold;">
+                    {{df_processed[i][j]}} 
+                </p>
+                {% if df_upload[i][j] != df_processed[i][j] %}
+                <p style="color: rgb(80, 80, 80);">Data Sebelumnya : {{df_upload[i][j]}}</p>
+                {% endif %}
                 </td>
                 {%endfor%}
               </tr>
@@ -40,10 +58,6 @@ block main %}
           {%endfor%}
         </table>
       </div>
-      <!-- <a
-          class="btn-submit"
-          href="{{url_for('static', filename=filenamesuccess)}}"
-        ></a> -->
       {% else %}
       <form
         class="form-custom"
