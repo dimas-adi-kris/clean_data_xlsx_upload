@@ -9,20 +9,19 @@ requirement :
 - jinja2    : 2.10.3
 - markupsafe:
 
-|Library|Versi  |
-|Flask|1.1.1|
-|jinja2|2.10.3|
+| Package | Versi  |
+|---------|--------|
+| Python  | 3.11   |
+| Flask   | 1.1.1  |
+| jinja2  | 2.10.3 |
+| markupsafe  | 2.0.1 |
+| itsdangerous  | 2.0.1 |
+| werkzeug  | 2.0.3 |
 
 install Flask, pandas, numpy, dan regex
 
-- conda
-```
-conda install flask -y
-conda install pandas -y
-conda install numpy -y
-conda install regex -y
-```
 - pip
+
 ```
 py -m pip install --user virtualenv
 py -m venv flaskpy2
@@ -33,12 +32,23 @@ pip install numpy
 pip install regex 
 pip install openpyxl
 pip install xlrd
-flask run
-
 ```
 
+- conda
+
+Jika menggunakan anaconda untuk instalasi, tidak perlu khawatir selain yang dibawah ini
+```
+conda install flask -y
+conda install pandas -y
+conda install numpy -y
+conda install regex -y
+pip install openpyxl
+pip install xlrd
+```
+
+
 # Jalankan
-Jalankan 
+Untuk menjalankan flask, jalankan
 ```
 flask run
 ```

@@ -40,7 +40,7 @@ block main %}
                 <td>{{i}}</td>
                 {%for j in range(0, df_processed[i]|length)%}
                 <td
-                  {% if df_upload[i][j] != df_processed[i][j] %}
+                  {% if (df_upload[i][j] != df_processed[i][j]) or (df_upload[i][j] == "") %}
                   class="beda"
                   {% endif %}
                 >

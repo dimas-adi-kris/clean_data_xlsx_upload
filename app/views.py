@@ -17,7 +17,6 @@ def index():
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
     hists = os.listdir(app.config["IMAGE_UPLOADS"])
-    print(hists)
     if request.method == "POST":
 
         if request.files:
@@ -54,6 +53,7 @@ def upload():
             df['Nama'] = df['Nama'].fillna('').astype(str).apply(remove_special_characters)
             df['Jen. Kelamin'] = df['Jen. Kelamin'].fillna('').astype(str).apply(gender)
             df['TanggalLahir'] = df['TanggalLahir'].fillna('').astype(str).apply(to_datetime)
+            df['Nama Pihak Yang Dapat Dihubungi'] = df['Nama Pihak Yang Dapat Dihubungi'].fillna('').astype(str).apply(noNumber)
             
             df['RT'] = df['RT'].fillna('').astype(str)
             df['RW'] = df['RW'].fillna('').astype(str)
@@ -77,6 +77,10 @@ def upload():
                 filenamesuccess=fileNoExt+'.xlsx',
                 filenameoriginal=fileUpload.filename
                 )
+
+def noNumber(x):
+    judgement = any(char.isdigit() for char in x)
+    return x if not judgement else ""
 
 def update_nationality(x):
     if x.upper() == 'INDONESIA':

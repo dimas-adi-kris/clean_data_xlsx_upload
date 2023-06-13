@@ -1,5 +1,6 @@
 
 *.xls
 *.xlsx
+*.csv
 flaskpy/*
 flaskpy2/*
