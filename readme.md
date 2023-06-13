@@ -1,3 +1,18 @@
+# Instalasi
+
+Semua requirement yang ditulis di sini sudah diuji. Jika menggunakan selain yang telah diuji dan terdapat error saat dijalankan, silahkan hubungi
+
+
+requirement :
+- Python    | 3.11 
+- flask     | 1.1.1
+- jinja2    : 2.10.3
+- markupsafe:
+
+|Library|Versi  |
+|Flask|1.1.1|
+|jinja2|2.10.3|
+
 install Flask, pandas, numpy, dan regex
 
 - conda
@@ -16,11 +31,17 @@ pip install flask==1.1.1 jinja2==2.10.3 markupsafe==2.0.1 itsdangerous==2.0.1 we
 pip install pandas 
 pip install numpy 
 pip install regex 
+pip install openpyxl
+pip install xlrd
 flask run
 
 ```
 
+# Jalankan
 Jalankan 
 ```
 flask run
 ```
+
+# v 1.0
+- Rilis
