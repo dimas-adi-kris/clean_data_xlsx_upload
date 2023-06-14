@@ -4,10 +4,6 @@ Semua requirement yang ditulis di sini sudah diuji. Jika menggunakan selain yang
 
 
 requirement :
-- Python    | 3.11 
-- flask     | 1.1.1
-- jinja2    : 2.10.3
-- markupsafe:
 
 | Package | Versi  |
 |---------|--------|
@@ -36,7 +32,6 @@ pip install xlrd
 
 - conda
 
-Jika menggunakan anaconda untuk instalasi, tidak perlu khawatir selain yang dibawah ini
 ```
 conda install flask -y
 conda install pandas -y
