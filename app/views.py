@@ -36,6 +36,9 @@ def upload():
             else:
                 return render_template("public/index.html",feedback="Format file salah",status='danger')
             df_old = df_old.fillna('')
+            kolomReq = [
+                'NPWP','Status Kawin','KodePos','Status Pekerjaan',
+            'Kebangsaan']
             df = df_old.copy()
             df = onlyNumbersOnStr(df,'NPWP')
             df['NPWP'] = df['NPWP'].apply(lambda x:x if len(x)==15 else False)
@@ -64,7 +67,8 @@ def upload():
             df['Pendidikan'] = df['Pendidikan'].fillna('').astype(str).apply(pendidikan)
             df['Agama'] = df['Agama'].fillna('').astype(str).apply(agama)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
-            df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'))
+            df['NoIdentitas'] = df['NoIdentitas'].astype(str).apply(NIKconfirm)
+            df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
             
 
             return render_template(
@@ -77,6 +81,14 @@ def upload():
                 filenamesuccess=fileNoExt+'.xlsx',
                 filenameoriginal=fileUpload.filename
                 )
+
+def NIKconfirm(x):
+    if len(x)!=16:
+        return "Panjang NIK harus 16 angka"
+    elif  x[-4:] == '0000':
+        return f"4 angka belakang NIK tidak boleh 0000 {x} - {x[-4:]}"
+    else:
+        return x
 
 def noNumber(x):
     judgement = any(char.isdigit() for char in x)

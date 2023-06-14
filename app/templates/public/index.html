@@ -34,11 +34,8 @@ block main %}
               {{column[i]}}
               {% if column[i]=="Agama" %}
               <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="ISLAM, HINDU, BUDHA, PROTESTAN, KATHOLIK, KONGHUCU"></i>
+            </th>
             {% endif %}
-            </th>
-            <th>
-              Total perubahan pada baris
-            </th>
             {%endfor%}
           </thead>
           <!-- prettier-ignore -->
@@ -48,7 +45,7 @@ block main %}
                 <td>{{i}}</td>
                 {%for j in range(0, df_processed[i]|length)%}
                 <td
-                  {% if (df_upload[i][j] != df_processed[i][j]) or (df_upload[i][j] == "") %}
+                  {% if (df_upload[i][j]|string != df_processed[i][j]|string) or (df_upload[i][j] == "") %}
                   class="beda"
                   {% endif %}
                 >
