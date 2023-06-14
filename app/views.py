@@ -86,7 +86,7 @@ def NIKconfirm(x):
     if len(x)!=16:
         return "Panjang NIK harus 16 angka"
     elif  x[-4:] == '0000':
-        return f"4 angka belakang NIK tidak boleh 0000 {x} - {x[-4:]}"
+        return f"4 angka belakang NIK tidak boleh 0000"
     else:
         return x
 
