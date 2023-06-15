@@ -7,6 +7,7 @@ from app import app
 from flask import render_template, request, redirect, jsonify, make_response, send_file, send_from_directory, abort, url_for, session
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from app.helpers import find_col
 
 @app.route("/", methods=["GET", "POST"])
 @app.route('/index', methods=["GET", "POST"])
@@ -37,26 +38,58 @@ def upload():
                 return render_template("public/index.html",feedback="Format file salah",status='danger')
             df_old = df_old.fillna('')
             kolomReq = [
-                'NPWP','Status Kawin','KodePos','Status Pekerjaan',
-            'Kebangsaan']
+                'NPWP','Status Kawin','Kode Pos','Status Pekerjaan','Kebangsaan'
+                ]
+            
+            # Cleaning Column name
+            col_change = {}
+            for col in df_old.columns:
+                if is_camel_case(col):
+                    col_change[col] = ' '.join(camel_case_split(col))
+                    col_change[col] = ' '.join(remove_special_characters(col_change[col]).split())
+
+            df_old = df_old.rename(columns=col_change)
             df = df_old.copy()
-            df = onlyNumbersOnStr(df,'NPWP')
-            df['NPWP'] = df['NPWP'].apply(lambda x:x if len(x)==15 else False)
+
+            npwp_s = find_col(df.columns,'NPWP')
+            for npwp in npwp_s:
+                df = onlyNumbersOnStr(df,npwp)
+                df[npwp] = df[npwp].apply(lambda x:x if len(x)==15 else False)
+            del npwp_s,npwp
 
             df['Status Kawin'] = df['Status Kawin'].astype(str).apply(setStatusKawin)
-            df['KodePos'] = df['KodePos'].replace({'':0}).astype(int).astype(str).apply(lambda x: x if len(x)==5 else False)
+            df['Kode Pos'] = df['Kode Pos'].replace({'':0}).astype(int).astype(str).apply(lambda x: x if len(x)==5 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if len(x)>1 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if x[0] in ['1','2','3','4'] else False)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(lambda x: x if x.upper()=='INDONESIA' else False)
-            df['Nama'] = uppercase_column(df['Nama'])
-            df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(remove_special_characters)
-            df['Telpon'] = df['Telpon'].fillna('').astype(str).apply(cleanPhoneNumber)
-            df['TelpHP(62000000000000)'] = df['TelpHP(62000000000000)'].fillna('').astype(str).apply(remove_special_characters)
-            df['TelpHP(62000000000000)'] = df['TelpHP(62000000000000)'].fillna('').astype(str).apply(cleanPhoneNumber)
-            df['Nama'] = df['Nama'].fillna('').astype(str).apply(remove_special_characters)
-            df['Jen. Kelamin'] = df['Jen. Kelamin'].fillna('').astype(str).apply(gender)
-            df['TanggalLahir'] = df['TanggalLahir'].fillna('').astype(str).apply(to_datetime)
-            df['Nama Pihak Yang Dapat Dihubungi'] = df['Nama Pihak Yang Dapat Dihubungi'].fillna('').astype(str).apply(noNumber)
+
+            telp_s = find_col(df.columns,'telp')
+            for telp in telp_s:
+                df[telp] = df[telp].fillna('').astype(str).apply(remove_special_characters)
+                df[telp] = df[telp].fillna('').astype(str).apply(cleanPhoneNumber)
+            del telp_s,telp
+
+
+            nama_s = find_col(df.columns,'nama')
+            for nama in nama_s:
+                df[nama] = uppercase_column(df[nama])
+                df[nama] = df[nama].fillna('').astype(str).apply(remove_special_characters)
+                df[nama] = df[nama].fillna('').astype(str).apply(noNumber)
+            del nama_s,nama
+
+            jen_kel_s = find_col(df.columns,'kelamin')
+            for jen_kel in jen_kel_s:
+                df[jen_kel] = df[jen_kel].fillna('').astype(str).apply(gender)
+            del jen_kel_s,jen_kel
+
+            tgl_s = find_col(df.columns,'tanggal')
+            for tgl in tgl_s:
+                df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
+            del tgl_s,tgl
+            tgl_s = find_col(df.columns,'tgl')
+            for tgl in tgl_s:
+                df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
+            del tgl_s,tgl
             
             df['RT'] = df['RT'].fillna('').astype(str)
             df['RW'] = df['RW'].fillna('').astype(str)
@@ -67,7 +100,7 @@ def upload():
             df['Pendidikan'] = df['Pendidikan'].fillna('').astype(str).apply(pendidikan)
             df['Agama'] = df['Agama'].fillna('').astype(str).apply(agama)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
-            df['NoIdentitas'] = df['NoIdentitas'].astype(str).apply(NIKconfirm)
+            df['No Identitas'] = df['No Identitas'].astype(str).apply(NIKconfirm)
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
             
 
@@ -162,8 +195,15 @@ def cleanPhoneNumber(x):
         x = False
     return x
 
+def is_camel_case(s):
+    return s != s.lower() and s != s.upper() and "_" not in s
+
+def camel_case_split(identifier):
+    matches = re.finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', identifier)
+    return [m.group(0) for m in matches]
+
 def remove_special_characters(x):
-    return ''.join(e for e in x if e.isalnum())
+    return re.sub('[^a-zA-Z0-9 \n]', ' ', x)
 
 def gender(x):
     if x.lower() in ['pria', 'p','laki','laki-laki']:
