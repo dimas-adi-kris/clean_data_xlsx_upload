@@ -58,6 +58,7 @@ def upload():
             del npwp_s,npwp
 
             df['Status Kawin'] = df['Status Kawin'].astype(str).apply(setStatusKawin)
+            df['Suami Istri'] = df.apply(suami_istri)
             df['Kode Pos'] = df['Kode Pos'].replace({'':0}).astype(int).astype(str).apply(lambda x: x if len(x)==5 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if len(x)>1 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if x[0] in ['1','2','3','4'] else False)
@@ -114,6 +115,12 @@ def upload():
                 filenamesuccess=fileNoExt+'.xlsx',
                 filenameoriginal=fileUpload.filename
                 )
+
+def suami_istri(row):
+    if row['Status Kawin'] == 'D: KAWIN':
+        return str(row['Suami Istri']).upper()
+    else:
+        return False
 
 def NIKconfirm(x):
     if len(x)!=16:
@@ -207,9 +214,9 @@ def remove_special_characters(x):
 
 def gender(x):
     if x.lower() in ['pria', 'p','laki','laki-laki']:
-        formatted_gender = 'P : Pria'
+        formatted_gender = 'P : PRIA'
     elif x.lower() in ['wanita', 'w','cewek','perempuan']:
-        formatted_gender = 'W : Wanita'
+        formatted_gender = 'W : WANITA'
     else:
         formatted_gender = False
     return formatted_gender
