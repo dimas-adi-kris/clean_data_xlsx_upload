@@ -29,17 +29,19 @@ def upload():
             filename = fileNoExt+'.'+ext
 
             fileUpload.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
-
             if ext == 'csv':
                 df_old = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename),)
             elif ext in ['xlsx','xls']:
-                df_old = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename), )
+                exc = pd.ExcelFile(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+                df_old = exc.parse(exc.sheet_names[0])
+                df_parameter = exc.parse('TABEL PARAMETER')
             else:
                 return render_template("public/index.html",feedback="Format file salah",status='danger')
             df_old = df_old.fillna('')
             kolomReq = [
                 'NPWP','Status Kawin','Kode Pos','Status Pekerjaan','Kebangsaan'
                 ]
+            kode_dati = df_parameter[df_parameter['Kode Dati II'].notna()]['Kode Dati II'].astype(str).str.title()
             
             # Cleaning Column name
             col_change = {}
@@ -91,6 +93,9 @@ def upload():
             for tgl in tgl_s:
                 df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
             del tgl_s,tgl
+
+            df['Kota'] = df['Kota'].astype(str).str.title()
+            df['Kota'] = df['Kota'].astype(str).apply(kota,args=[kode_dati])
             
             df['RT'] = df['RT'].fillna('').astype(str)
             df['RW'] = df['RW'].fillna('').astype(str)
@@ -116,6 +121,20 @@ def upload():
                 filenameoriginal=fileUpload.filename
                 )
 
+def kota(x, kode_):
+    
+    if (x == '') or (pd.isna(x)) or (x.lower() == 'nan'):
+        return ''
+    res = []
+    for kode in kode_:
+        if x in kode:
+            res.append(kode)
+    if len(res) == 0:
+        return '9999: Di Luar Indonesia'
+    elif len(res) == 1:
+        return res[0]
+    else:
+        return 'Ada di lebih dari 1 daerah'
 def suami_istri(row):
     if row['Status Kawin'] == 'D: KAWIN':
         return str(row['Suami Istri']).upper()
