@@ -113,7 +113,7 @@ def upload():
                 "public/index.html",
                 feedback="",
                 status='success',
-                column=df_old.columns,
+                column=old_col,
                 df_upload=df_old.values.tolist(),
                 df_processed=df.values.tolist(),
                 filenamesuccess=fileNoExt+'.xlsx',
@@ -123,8 +123,10 @@ def upload():
 def suami_istri(row):
     if row['Status Kawin'] == 'D: KAWIN':
         return str(row['Suami Istri']).upper()
+    elif row['Status Kawin'] in ['B: BELUM KAWIN','K: CERAI']:
+        return 'NULL'
     else:
-        return False
+        return 'False'
 
 def NIKconfirm(x):
     if len(x)!=16:
