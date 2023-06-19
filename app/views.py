@@ -148,8 +148,6 @@ def kota(y, kode_):
             res_prop.append(kode)
     if len(res_prop) == 1:
         return res_prop[0]
-    else:
-        print([x,x_prop,res_prop,len(res)])
     return '9999: Di Luar Indonesia'
 
 def suami_istri(row):
