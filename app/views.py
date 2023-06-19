@@ -25,7 +25,7 @@ def upload():
 
             filename = fileUpload.filename
             ext = filename.split('.')[-1]
-            fileNoExt = filename.split('.')[:-1][0]+'-'+''.join(str(v) for v in np.random.randint(1, [3, 5, 10]).tolist())
+            fileNoExt = filename.split('.')[:-1][0]+'-'+''.join(str(v) for v in np.random.randint(10, size=10).tolist())
             filename = fileNoExt+'.'+ext
 
             fileUpload.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
@@ -40,6 +40,8 @@ def upload():
             kolomReq = [
                 'NPWP','Status Kawin','Kode Pos','Status Pekerjaan','Kebangsaan'
                 ]
+
+            old_col = df_old.columns
             
             # Cleaning Column name
             col_change = {}
@@ -47,7 +49,6 @@ def upload():
                 if is_camel_case(col):
                     col_change[col] = ' '.join(camel_case_split(col))
                     col_change[col] = ' '.join(remove_special_characters(col_change[col]).split())
-
             df_old = df_old.rename(columns=col_change)
             df = df_old.copy()
 
@@ -58,7 +59,7 @@ def upload():
             del npwp_s,npwp
 
             df['Status Kawin'] = df['Status Kawin'].astype(str).apply(setStatusKawin)
-            df['Suami Istri'] = df.apply(suami_istri)
+            df['Suami Istri'] = df.apply(suami_istri,axis=1)
             df['Kode Pos'] = df['Kode Pos'].replace({'':0}).astype(int).astype(str).apply(lambda x: x if len(x)==5 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if len(x)>1 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if x[0] in ['1','2','3','4'] else False)
@@ -102,6 +103,9 @@ def upload():
             df['Agama'] = df['Agama'].fillna('').astype(str).apply(agama)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
             df['No Identitas'] = df['No Identitas'].astype(str).apply(NIKconfirm)
+
+
+            df.columns = old_col
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
             
 
