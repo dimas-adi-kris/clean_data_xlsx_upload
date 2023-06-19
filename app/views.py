@@ -103,6 +103,7 @@ def upload():
             df['Agama'] = df['Agama'].fillna('').astype(str).apply(agama)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
             df['No Identitas'] = df['No Identitas'].astype(str).apply(NIKconfirm)
+            df['Kode Dati II CARGCD'] = df.apply(kota,args=[kode_dati],axis=1)
 
 
             df.columns = old_col
@@ -119,6 +120,37 @@ def upload():
                 filenamesuccess=fileNoExt+'.xlsx',
                 filenameoriginal=fileUpload.filename
                 )
+
+def kota(y, kode_):
+    x = str(y['Kota'])
+    if (x == '') or (pd.isna(x)) or (x.lower() == 'nan'):
+        return ''
+    res = []
+
+    for kode in kode_:
+        if x in kode:
+            res.append(kode)
+    # kota
+    if len(res) == 1:
+        return res[0]
+    elif len(res)>1:
+        for r in res:
+            if ('kab.' in r.lower()) or ('kabupaten' in r.lower()):
+                return r
+            elif ('kota' in r.lower()):
+                return r
+    # propinsi
+    x_prop = y['Propinsi'].title()
+    res_prop = []
+
+    for kode in kode_:
+        if x_prop in kode.title():
+            res_prop.append(kode)
+    if len(res_prop) == 1:
+        return res_prop[0]
+    else:
+        print([x,x_prop,res_prop,len(res)])
+    return '9999: Di Luar Indonesia'
 
 def suami_istri(row):
     if row['Status Kawin'] == 'K: KAWIN':
