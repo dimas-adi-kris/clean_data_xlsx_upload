@@ -121,9 +121,9 @@ def upload():
                 )
 
 def suami_istri(row):
-    if row['Status Kawin'] == 'D: KAWIN':
+    if row['Status Kawin'] == 'K: KAWIN':
         return str(row['Suami Istri']).upper()
-    elif row['Status Kawin'] in ['B: BELUM KAWIN','K: CERAI']:
+    elif row['Status Kawin'] in ['B: BELUM KAWIN','D: CERAI']:
         return 'NULL'
     else:
         return 'False'
@@ -185,7 +185,7 @@ def format_r(x):
     return f"'{x.zfill(3)}"
 
 def setStatusKawin(x):
-    return 'B: BELUM KAWIN' if x.lower()=='belum' else 'D: KAWIN' if x.lower()=='kawin' else 'K: CERAI' if x.lower()=='cerai' else False
+    return 'B: BELUM KAWIN' if x.lower()=='belum' else 'K: KAWIN' if x.lower()=='kawin' else 'D: CERAI' if x.lower()=='cerai' else False
 
 def onlyNumbersOnStr(df,column):
     df[column] = df[column].astype(str).apply(lambda x:re.sub(r'\D', '', x))
