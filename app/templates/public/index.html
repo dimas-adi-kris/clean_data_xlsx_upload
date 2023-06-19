@@ -3,7 +3,10 @@ block main %}
 <!--   Big container   -->
 <div class="container">
   <div class="row text-center">
-    <h2>Excel data cleaner</h2>
+    <div class="row" style="display: inline; width: 100%;">
+      <h2 >Excel data cleaner</h2>
+
+    </div>
     <h4>
       Perbaiki data excel dari format format. Upload satu file excel dan temukan
       perbedaannya
@@ -15,7 +18,7 @@ block main %}
   </div>
   <div class="row outer-box border text-center">
     {% if status=='success' %}
-    <div class="m-5">
+    <div class="m-5 w-100">
       <a
         class="btn-submit"
         href="{{url_for('static', filename=filenamesuccess)}}"
@@ -23,7 +26,7 @@ block main %}
       >
     </div>
     {% endif %}
-    <div class="row inner-box border text-center">
+    <div class="row inner-box border text-center w-100">
       {% if status=='success' %} {%for i in range(0, 1)%}
       <div class="table">
         <table id="DataTable" class="cell-border" style="width: 100%">

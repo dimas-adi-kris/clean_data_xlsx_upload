@@ -23,6 +23,8 @@ class DevelopmentConfig(Config):
     IMAGE_UPLOADS = "./"
 
     SESSION_COOKIE_SECURE = False
+    TEMPLATES_AUTO_RELOAD = True
+
 
 class TestingConfig(Config):
     TESTING = True
