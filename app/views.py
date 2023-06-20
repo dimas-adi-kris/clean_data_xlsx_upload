@@ -9,6 +9,16 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from app.helpers import find_col
 
+
+with open("Kode Dati.json",'r') as f:
+    kode_dati = pd.DataFrame(json.loads(f.read()))
+
+kode_dati['Kode'] = kode_dati['Kode Dati II'].str.split(':').str[0]
+wilayah = kode_dati['Kode Dati II'].str.split(':').str[1].str.strip().str.split('-')
+kode_dati['Propinsi'] = wilayah.str[0].str.strip().str.upper()
+kode_dati['Kota Kab'] = wilayah.str[1].str.strip().str.upper()
+
+
 @app.route("/", methods=["GET", "POST"])
 @app.route('/index', methods=["GET", "POST"])
 def index():
@@ -159,6 +169,61 @@ def kota(y, kode_):
             res_prop.append(kode)
     if len(res_prop) == 1:
         return res_prop[0]
+    return '9999: Di Luar Indonesia'
+
+def kota(y, kode_):
+    x = str(y['Kota'])
+    if (x == '') or (pd.isna(x)) or (x.lower() == 'nan'):
+        return ''    
+    res = kode_[kode_['Kota Kab'].str.contains(x.upper())]
+    
+    # kota
+    if len(res) == 1:
+        return res.iloc[0,0]
+    else:
+        # Kalo dk langsung ketemu, berarti hasil antara kosong atau ketemu banyak
+        # pendekatan berikutnya, kabupaten atau kota. Hanya menerima "Kabupaten" atau "Kota" atau "Kab."
+        # Tidak terima "Kab" karena ada "Sukabumi"
+        # hasil res akan di filter lagi
+        x_kab = y['Kota'].upper()
+        if ("KABUPATEN" in x_kab):
+
+            x_kab = x_kab.replace('KABUPATEN','').strip()
+            res_k = kode_dati[kode_dati['Kota Kab'] == ('KAB. '+x_kab)]
+            if len(res_k) == 1:
+                return res_k.iloc[0,0]
+        elif 'KAB.' in x_kab:
+            x_kab = remove_special_characters(x_kab).replace('KAB','').strip()
+            res_k = kode_dati[kode_dati['Kota Kab'] == ('KAB. '+x_kab)]
+            if len(res_k) == 1:
+                return res_k.iloc[0,0]
+        elif 'KOTA' in x_kab:
+            x_kab = x_kab.replace('KOTA','').strip()
+            res_k = kode_dati[kode_dati['Kota Kab'] == ('KOTA '+x_kab)]
+            if len(res_k) == 1:
+                    return res_k.iloc[0,0]
+
+        else:
+            # Pendekatan propinsi
+            # cek apakah x ada di propinsi res
+            # diambil dari res
+            # pendekatan ini bisa dilakukan kalo res lebih dari 1. 
+            # kalo kosong, harus filter ulang
+            res_prop = res[res['Kota Kab'].str.contains(y['Propinsi'].upper())]
+            if len(res_prop) == 1:
+                return res_prop.iloc[0,0]
+            res_prop = res[res['Propinsi'].str.contains(y['Propinsi'].upper())]
+            if len(res_prop) == 1:
+                return res_prop.iloc[0,0]
+            
+            # pendekatan propinsi, filter ulang
+            res_prop = kode_dati[kode_dati['Kota Kab'].str.contains(y['Propinsi'].upper())]
+            if len(res_prop) == 1:
+                return res_prop.iloc[0,0]
+            res_prop = kode_dati[kode_dati['Propinsi'].str.contains(y['Propinsi'].upper())]
+            if len(res_prop) == 1:
+                return res_prop.iloc[0,0]
+            
     return '9999: Di Luar Indonesia'
 
 def suami_istri(row):
