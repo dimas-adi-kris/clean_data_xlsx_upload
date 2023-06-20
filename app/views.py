@@ -9,8 +9,7 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from app.helpers import find_col
 
-
-with open("Kode Dati.json",'r') as f:
+with open("./Kode Dati.json",'r') as f:
     kode_dati = pd.DataFrame(json.loads(f.read()))
 
 kode_dati['Kode'] = kode_dati['Kode Dati II'].str.split(':').str[0]
@@ -70,7 +69,7 @@ def upload():
 
             df['Status Kawin'] = df['Status Kawin'].astype(str).apply(setStatusKawin)
             df['Suami Istri'] = df.apply(suami_istri,axis=1)
-            df['Kode Pos'] = df['Kode Pos'].replace({'':0}).astype(int).astype(str).apply(kodePosConfirm)
+            df['Kode Pos'] = df['Kode Pos'].fillna('0').astype(int).astype(str).apply(kodePosConfirm)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if len(x)>1 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if x[0] in ['1','2','3','4'] else False)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(lambda x: x if x.upper()=='INDONESIA' else False)
@@ -143,8 +142,8 @@ def kodePosConfirm(x):
 
 
 def kota(y, kode_):
-    x = str(y['Kota'])
-    if (x == '') or (pd.isna(x)) or (x.lower() == 'nan'):
+    x = str(y['Kota']).strip()
+    if (x == '') or (x == '') or (pd.isna(x)) or (x.lower() == 'nan'):
         return ''
     res = []
 

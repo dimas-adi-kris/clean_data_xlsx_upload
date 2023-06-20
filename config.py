@@ -20,7 +20,7 @@ class DevelopmentConfig(Config):
     DB_USERNAME = "admin"
     DB_PASSWORD = "example"
 
-    IMAGE_UPLOADS = "./"
+    IMAGE_UPLOADS = "./app/static"
 
     SESSION_COOKIE_SECURE = False
     TEMPLATES_AUTO_RELOAD = True
