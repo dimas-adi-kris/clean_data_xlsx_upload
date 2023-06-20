@@ -46,6 +46,9 @@ def upload():
             else:
                 return render_template("public/index.html",feedback="Format file salah",status='danger')
             df_old = df_old.fillna('')
+            kolomReq = [
+                'NPWP','Status Kawin','Kode Pos','Status Pekerjaan','Kebangsaan'
+                ]
 
             old_col = df_old.columns
             
@@ -58,42 +61,11 @@ def upload():
             df_old = df_old.rename(columns=col_change)
             df = df_old.copy()
 
-            kolomReq = [
-                'NPWP','Status Kawin','Suami Istri','Kode Pos','Status Pekerjaan','Kebangsaan'
-                ]
-            for col in kolomReq:
-                if col not in df.columns:
-                    return render_template("public/index.html",feedback="Tidak ada kolom "+col,status='danger') 
-
             npwp_s = find_col(df.columns,'NPWP')
-            telp_s = find_col(df.columns,'telp')
-            nama_s = find_col(df.columns,'nama')
-            jen_kel_s = find_col(df.columns,'kelamin')
-            tanggal = find_col(df.columns,'tanggal')
-            tgl_s = find_col(df.columns,'tgl')
-
             for npwp in npwp_s:
                 df = onlyNumbersOnStr(df,npwp)
                 df[npwp] = df[npwp].apply(lambda x:x if len(x)==15 else False)
             del npwp_s,npwp
-            for telp in telp_s:
-                df[telp] = df[telp].fillna('').astype(str).apply(remove_special_characters)
-                df[telp] = df[telp].fillna('').astype(str).apply(cleanPhoneNumber)
-            del telp_s,telp
-            for nama in nama_s:
-                df[nama] = uppercase_column(df[nama])
-                df[nama] = df[nama].fillna('').astype(str).apply(remove_special_characters)
-                df[nama] = df[nama].fillna('').astype(str).apply(noNumber)
-            del nama_s,nama
-            for jen_kel in jen_kel_s:
-                df[jen_kel] = df[jen_kel].fillna('').astype(str).apply(gender)
-            del jen_kel_s,jen_kel
-            for tgl in tanggal:
-                df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
-            del tanggal,tgl
-            for tgl in tgl_s:
-                df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
-            del tgl_s,tgl
 
             df['Status Kawin'] = df['Status Kawin'].astype(str).apply(setStatusKawin)
             df['Suami Istri'] = df.apply(suami_istri,axis=1)
@@ -103,6 +75,34 @@ def upload():
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(lambda x: x if x.upper()=='INDONESIA' else False)
 
             df['Masa Berlaku Identitas'] = '999123123'
+
+            telp_s = find_col(df.columns,'telp')
+            for telp in telp_s:
+                df[telp] = df[telp].fillna('').astype(str).apply(remove_special_characters)
+                df[telp] = df[telp].fillna('').astype(str).apply(cleanPhoneNumber)
+            del telp_s,telp
+
+
+            nama_s = find_col(df.columns,'nama')
+            for nama in nama_s:
+                df[nama] = uppercase_column(df[nama])
+                df[nama] = df[nama].fillna('').astype(str).apply(remove_special_characters)
+                df[nama] = df[nama].fillna('').astype(str).apply(noNumber)
+            del nama_s,nama
+
+            jen_kel_s = find_col(df.columns,'kelamin')
+            for jen_kel in jen_kel_s:
+                df[jen_kel] = df[jen_kel].fillna('').astype(str).apply(gender)
+            del jen_kel_s,jen_kel
+
+            tgl_s = find_col(df.columns,'tanggal')
+            for tgl in tgl_s:
+                df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
+            del tgl_s,tgl
+            tgl_s = find_col(df.columns,'tgl')
+            for tgl in tgl_s:
+                df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
+            del tgl_s,tgl
             
             df['RT'] = df['RT'].fillna('').astype(str)
             df['RW'] = df['RW'].fillna('').astype(str)
