@@ -114,6 +114,7 @@ def upload():
             df['Agama'] = df['Agama'].fillna('').astype(str).apply(agama)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
             df['No Identitas'] = df['No Identitas'].astype(str).apply(NIKconfirm)
+            df[['Kota','Propinsi']] = df[['Kota','Propinsi']].astype(str)
             df['Kode Dati II CARGCD'] = df.apply(kota,args=[kode_dati],axis=1)
 
 
@@ -141,37 +142,9 @@ def kodePosConfirm(x):
         return x
 
 
+
 def kota(y, kode_):
     x = str(y['Kota']).strip()
-    if (x == '') or (x == '') or (pd.isna(x)) or (x.lower() == 'nan'):
-        return ''
-    res = []
-
-    for kode in kode_:
-        if x in kode:
-            res.append(kode)
-    # kota
-    if len(res) == 1:
-        return res[0]
-    elif len(res)>1:
-        for r in res:
-            if ('kab.' in r.lower()) or ('kabupaten' in r.lower()):
-                return r
-            elif ('kota' in r.lower()):
-                return r
-    # propinsi
-    x_prop = y['Propinsi'].title()
-    res_prop = []
-
-    for kode in kode_:
-        if x_prop in kode.title():
-            res_prop.append(kode)
-    if len(res_prop) == 1:
-        return res_prop[0]
-    return '9999: Di Luar Indonesia'
-
-def kota(y, kode_):
-    x = str(y['Kota'])
     if (x == '') or (pd.isna(x)) or (x.lower() == 'nan'):
         return ''    
     res = kode_[kode_['Kota Kab'].str.contains(x.upper())]
