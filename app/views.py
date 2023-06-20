@@ -60,10 +60,12 @@ def upload():
 
             df['Status Kawin'] = df['Status Kawin'].astype(str).apply(setStatusKawin)
             df['Suami Istri'] = df.apply(suami_istri,axis=1)
-            df['Kode Pos'] = df['Kode Pos'].replace({'':0}).astype(int).astype(str).apply(lambda x: x if len(x)==5 else False)
+            df['Kode Pos'] = df['Kode Pos'].replace({'':0}).astype(int).astype(str).apply(kodePosConfirm)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if len(x)>1 else False)
             df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if x[0] in ['1','2','3','4'] else False)
             df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(lambda x: x if x.upper()=='INDONESIA' else False)
+
+            df['Masa Berlaku Identitas'] = '999123123'
 
             telp_s = find_col(df.columns,'telp')
             for telp in telp_s:
@@ -120,6 +122,15 @@ def upload():
                 filenamesuccess=fileNoExt+'.xlsx',
                 filenameoriginal=fileUpload.filename
                 )
+
+def kodePosConfirm(x):
+    if len(x) != 5:
+        return "Panjang Kode harus 5 angka"
+    elif x[-3:] == '000':
+        return "3 angka belakang tidak boleh 000"
+    else:
+        return x
+
 
 def kota(y, kode_):
     x = str(y['Kota'])
