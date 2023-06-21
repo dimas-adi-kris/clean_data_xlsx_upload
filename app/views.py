@@ -79,8 +79,8 @@ def upload():
 
             telp_s = find_col(df.columns,'telp')
             for telp in telp_s:
-                df[telp] = df[telp].fillna('').apply(remove_special_characters)
-                df[telp] = df[telp].fillna('').apply(cleanPhoneNumber)
+                df[telp] = df[telp].fillna('').apply(remove_special_characters).str.replace(' ','')
+                df[telp] = df[telp].apply(cleanPhoneNumber)
             del telp_s,telp
 
 
@@ -88,7 +88,7 @@ def upload():
             for nama in nama_s:
                 df[nama] = uppercase_column(df[nama])
                 df[nama] = df[nama].fillna('').apply(remove_special_characters)
-                df[nama] = df[nama].fillna('').apply(noNumber)
+                df[nama] = df[nama].apply(noNumber)
             del nama_s,nama
 
             jen_kel_s = find_col(df.columns,'kelamin')
