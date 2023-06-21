@@ -40,9 +40,9 @@ def upload():
             fileUpload.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
 
             if ext == 'csv':
-                df_old = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename),)
+                df_old = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename), dtype=str)
             elif ext in ['xlsx','xls']:
-                df_old = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename), )
+                df_old = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename), dtype=str)
             else:
                 return render_template("public/index.html",feedback="Format file salah",status='danger')
             df_old = df_old.fillna('')
@@ -70,57 +70,56 @@ def upload():
                 df[npwp] = df[npwp].apply(lambda x:x if len(x)==15 else False)
             del npwp_s,npwp
 
-            df['Status Kawin'] = df['Status Kawin'].astype(str).apply(setStatusKawin)
+            df['Status Kawin'] = df['Status Kawin'].apply(setStatusKawin)
             df['Suami Istri'] = df.apply(suami_istri,axis=1)
-            df['Kode Pos'] = df['Kode Pos'].fillna('0').astype(int).astype(str).apply(kodePosConfirm)
-            df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if len(x)>1 else False)
-            df['Status Pekerjaan'] = df['Status Pekerjaan'].astype(str).apply(lambda x: x if x[0] in ['1','2','3','4'] else False)
-            df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(lambda x: x if x.upper()=='INDONESIA' else False)
+            df['Kode Pos'] = df['Kode Pos'].fillna('0').apply(kodePosConfirm)
+            df['Status Pekerjaan'] = df['Status Pekerjaan'].apply(lambda x: x if len(x)>1 else 'FALSE')
+            df['Status Pekerjaan'] = df['Status Pekerjaan'].apply(lambda x: x if x[:1] in ['1','2','3','4'] else 'FALSE')
 
             df['Masa Berlaku Identitas'] = '999123123'
 
             telp_s = find_col(df.columns,'telp')
             for telp in telp_s:
-                df[telp] = df[telp].fillna('').astype(str).apply(remove_special_characters)
-                df[telp] = df[telp].fillna('').astype(str).apply(cleanPhoneNumber)
+                df[telp] = df[telp].fillna('').apply(remove_special_characters)
+                df[telp] = df[telp].fillna('').apply(cleanPhoneNumber)
             del telp_s,telp
 
 
             nama_s = find_col(df.columns,'nama')
             for nama in nama_s:
                 df[nama] = uppercase_column(df[nama])
-                df[nama] = df[nama].fillna('').astype(str).apply(remove_special_characters)
-                df[nama] = df[nama].fillna('').astype(str).apply(noNumber)
+                df[nama] = df[nama].fillna('').apply(remove_special_characters)
+                df[nama] = df[nama].fillna('').apply(noNumber)
             del nama_s,nama
 
             jen_kel_s = find_col(df.columns,'kelamin')
             for jen_kel in jen_kel_s:
-                df[jen_kel] = df[jen_kel].fillna('').astype(str).apply(gender)
+                df[jen_kel] = df[jen_kel].fillna('').apply(gender)
             del jen_kel_s,jen_kel
 
             tgl_s = find_col(df.columns,'tanggal')
             for tgl in tgl_s:
-                df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
+                df[tgl] = df[tgl].fillna('').apply(to_datetime)
             del tgl_s,tgl
             tgl_s = find_col(df.columns,'tgl')
             for tgl in tgl_s:
-                df[tgl] = df[tgl].fillna('').astype(str).apply(to_datetime)
+                df[tgl] = df[tgl].fillna('').apply(to_datetime)
             del tgl_s,tgl
             
-            df['RT'] = df['RT'].fillna('').astype(str)
-            df['RW'] = df['RW'].fillna('').astype(str)
+            df['RT'] = df['RT'].fillna('')
+            df['RW'] = df['RW'].fillna('')
             df = onlyNumbersOnStr(df,'RT')
             df = onlyNumbersOnStr(df,'RW')
             df['RT'] = df['RT'].apply(format_r)
             df['RW'] = df['RW'].apply(format_r)
-            df['Pendidikan'] = df['Pendidikan'].fillna('').astype(str).apply(pendidikan)
-            df['Agama'] = df['Agama'].fillna('').astype(str).apply(agama)
-            df['Kebangsaan'] = df['Kebangsaan'].astype(str).apply(update_nationality)
-            df['No Identitas'] = df['No Identitas'].astype(str).apply(NIKconfirm)
-            df[['Kota','Propinsi']] = df[['Kota','Propinsi']].astype(str)
+            df['Pendidikan'] = df['Pendidikan'].fillna('').apply(pendidikan)
+            df['Agama'] = df['Agama'].fillna('').apply(agama)
+            df['Kebangsaan'] = df['Kebangsaan'].apply(update_nationality)
+            df['No Identitas'] = df['No Identitas'].apply(NIKconfirm)
+            df[['Kota','Propinsi']] = df[['Kota','Propinsi']]
             df['Kode Dati II CARGCD'] = df.apply(kota,args=[kode_dati],axis=1)
 
-            df = df.apply(lambda x: x.astype(str).str.upper())
+            df = df.apply(lambda x: x.str.upper())
             df.columns = old_col
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
             
@@ -138,9 +137,9 @@ def upload():
 
 def kodePosConfirm(x):
     if len(x) != 5:
-        return "Panjang Kode harus 5 angka"
+        return "PANJANG KODE HARUS 5 ANGKA"
     elif x[-3:] == '000':
-        return "3 angka belakang tidak boleh 000"
+        return "3 ANGKA BELAKANG TIDAK BOLEH 000"
     else:
         return x
 
@@ -207,7 +206,7 @@ def suami_istri(row):
     elif row['Status Kawin'] in ['B: BELUM KAWIN','D: CERAI']:
         return 'NULL'
     else:
-        return 'False'
+        return 'FALSE'
 
 def NIKconfirm(x):
     if len(x)!=16:
@@ -224,11 +223,13 @@ def noNumber(x):
 def update_nationality(x):
     x = x.upper()
     if 'INDONESIA' in x:
-        return 'I : Indonesia'
+        return 'I : INDONESIA'
     return str(x)
 
 
 def agama(x):
+    if x in ['4: ISLAM','1: HINDU','2: BUDHA','3: PROTESTAN','5: KATHOLIK','7: KONGHUCU']:
+        return x
     if x.lower() == 'islam':
         a = '4: ISLAM'  # Ganti dengan format yang diinginkan
     elif x.lower() == 'hindu':
@@ -246,39 +247,44 @@ def agama(x):
     return str(a)
 
 def pendidikan(x):
+    if x in ['00: TANPA GELAR','01: DIPLOMA 1','02: DIPLOMA 2','03: DIPLOMA 3','04: S-1','05: S-2','06: S-3','99: LAINNYA']:
+        return x
     if x.upper().split(' ')[0] in ['SMA','SMP','SMAN','SLTA','SLTP','SMK','STM','SMU','SEKOLAH']:
-        pend = '00: Tanpa Gelar'
+        PEND = '00: TANPA GELAR'
     elif x.upper() in 'D1':
-        pend = '01: Diploma 1'
+        PEND = '01: DIPLOMA 1'
     elif x.upper() in 'D2':
-        pend = '02: Diploma 2'
+        PEND = '02: DIPLOMA 2'
     elif x.upper() in ['D3', 'DIII']:
-        pend = '03: Diploma 3'
+        PEND = '03: DIPLOMA 3'
     elif x.upper() in ['S1','STRATA 1']:
-        pend = '04: S-1'
+        PEND = '04: S-1'
     elif x.upper() in ['S2','STRATA 2']:
-        pend = '05: S-2'
+        PEND = '05: S-2'
     elif x.upper() in ['S3','STRATA 3']:
-        pend = '06: S-3'
+        PEND = '06: S-3'
     else:
-        pend = '99: Lainnya'
-    return pend
+        PEND = '99: LAINNYA'
+    return PEND
 
 def format_r(x):
     return f"'{x.zfill(3)}"
 
 def setStatusKawin(x):
-    return 'B: BELUM KAWIN' if x.lower()=='belum' else 'K: KAWIN' if x.lower()=='kawin' else 'D: CERAI' if x.lower()=='cerai' else False
+    if x.upper() in ['B: BELUM KAWIN', 'K: KAWIN','D: CERAI']:
+        return x.upper()
+    return 'B: BELUM KAWIN' if x.lower()=='belum' else 'K: KAWIN' if x.lower()=='kawin' else 'D: CERAI' if x.lower()=='cerai' else 'FALSE'
 
 def onlyNumbersOnStr(df,column):
-    df[column] = df[column].astype(str).apply(lambda x:re.sub(r'\D', '', x))
+    df[column] = df[column].str.split('.').str[0]
+    df[column] = df[column].apply(lambda x:re.sub(r'\D', '', x))
     return df
 
 def uppercase_column(col):
-    return col.fillna('').astype(str).str.upper()
+    return col.fillna('').str.upper()
 
 def lowercase_column(col):
-    return col.fillna('').astype(str).str.lower()
+    return col.fillna('').str.lower()
 
 def cleanPhoneNumber(x):
     if x.startswith('0'):
@@ -288,7 +294,7 @@ def cleanPhoneNumber(x):
     elif x.startswith('62'):
         x = x
     else:
-        x = 'False'
+        x = 'FALSE'
     return str(x)
 
 def is_camel_case(s):
@@ -302,13 +308,15 @@ def remove_special_characters(x):
     return re.sub('[^a-zA-Z0-9 \n]', ' ', x)
 
 def gender(x):
-    if x.lower() in ['pria', 'p','laki','laki-laki']:
-        formatted_gender = 'P : PRIA'
-    elif x.lower() in ['wanita', 'w','cewek','perempuan']:
-        formatted_gender = 'W : WANITA'
-    else:
-        formatted_gender = 'False'
-    return formatted_gender
+    if x.upper() in ['L: LAKI-LAKI','P: PEREMPUAN']:
+        return x
+    x_splits = x.split(' ')
+    for z in x_splits:
+        if z.lower() in ['pria', 'p','laki','laki-laki','cowo','cowok']:
+            return 'L: LAKI-LAKI'
+        elif z.lower() in ['wanita', 'w','cewek','perempuan','cewe','cewek']:
+            return 'P: PEREMPUAN'
+    return 'FALSE'
 
 def to_datetime(x):
     try:
