@@ -294,9 +294,9 @@ def lowercase_column(col):
 
 def cleanPhoneNumber(x):
     if x.startswith('0'):
-        x = "'62" + x[1:]
+        x = "62" + x[1:]
     elif x.startswith('8'):
-        x = "'628" + x[1:]
+        x = "628" + x[1:]
     elif x.startswith('62'):
         x = x
     else:
