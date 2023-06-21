@@ -46,9 +46,6 @@ def upload():
             else:
                 return render_template("public/index.html",feedback="Format file salah",status='danger')
             df_old = df_old.fillna('')
-            kolomReq = [
-                'NPWP','Status Kawin','Kode Pos','Status Pekerjaan','Kebangsaan'
-                ]
 
             old_col = df_old.columns
             
@@ -59,6 +56,12 @@ def upload():
                     col_change[col] = ' '.join(camel_case_split(col))
                     col_change[col] = ' '.join(remove_special_characters(col_change[col]).split())
             df_old = df_old.rename(columns=col_change)
+            kolomReq = [
+                'NPWP','Status Kawin','Suami Istri','Kode Pos','Status Pekerjaan','Kebangsaan'
+                ]
+            for col in kolomReq:
+                if col not in df_old.columns:
+                    return render_template("public/index.html",feedback="Tidak ada kolom "+col,status='danger') 
             df = df_old.copy()
 
             npwp_s = find_col(df.columns,'NPWP')
@@ -117,7 +120,7 @@ def upload():
             df[['Kota','Propinsi']] = df[['Kota','Propinsi']].astype(str)
             df['Kode Dati II CARGCD'] = df.apply(kota,args=[kode_dati],axis=1)
 
-
+            df = df.apply(lambda x: x.astype(str).str.upper())
             df.columns = old_col
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
             
@@ -219,9 +222,10 @@ def noNumber(x):
     return x if not judgement else ""
 
 def update_nationality(x):
-    if x.upper() == 'INDONESIA':
+    x = x.upper()
+    if 'INDONESIA' in x:
         return 'I : Indonesia'
-    return x
+    return str(x)
 
 
 def agama(x):
@@ -239,7 +243,8 @@ def agama(x):
         a = '7: KONGHUCU'
     else:
         a = x
-    return a
+    return str(a)
+
 def pendidikan(x):
     if x.upper().split(' ')[0] in ['SMA','SMP','SMAN','SLTA','SLTP','SMK','STM','SMU','SEKOLAH']:
         pend = '00: Tanpa Gelar'
@@ -283,8 +288,8 @@ def cleanPhoneNumber(x):
     elif x.startswith('62'):
         x = x
     else:
-        x = False
-    return x
+        x = 'False'
+    return str(x)
 
 def is_camel_case(s):
     return s != s.lower() and s != s.upper() and "_" not in s
@@ -302,7 +307,7 @@ def gender(x):
     elif x.lower() in ['wanita', 'w','cewek','perempuan']:
         formatted_gender = 'W : WANITA'
     else:
-        formatted_gender = False
+        formatted_gender = 'False'
     return formatted_gender
 
 def to_datetime(x):
