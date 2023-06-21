@@ -66,8 +66,7 @@ def upload():
 
             npwp_s = find_col(df.columns,'NPWP')
             for npwp in npwp_s:
-                df = onlyNumbersOnStr(df,npwp)
-                df[npwp] = df[npwp].apply(lambda x:x if len(x)==15 else False)
+                df[npwp] = df[npwp].apply(lambda x: x if len(x)==15 else onlyNumbersOnStr(x))
             del npwp_s,npwp
 
             df['Status Kawin'] = df['Status Kawin'].apply(setStatusKawin)
@@ -108,8 +107,8 @@ def upload():
             
             df['RT'] = df['RT'].fillna('')
             df['RW'] = df['RW'].fillna('')
-            df = onlyNumbersOnStr(df,'RT')
-            df = onlyNumbersOnStr(df,'RW')
+            df['RT'] = df['RT'].apply(onlyNumbersOnStr)
+            df['RW'] = df['RW'].apply(onlyNumbersOnStr)
             df['RT'] = df['RT'].apply(format_r)
             df['RW'] = df['RW'].apply(format_r)
             df['Pendidikan'] = df['Pendidikan'].fillna('').apply(pendidikan)
@@ -275,10 +274,11 @@ def setStatusKawin(x):
         return x.upper()
     return 'B: BELUM KAWIN' if x.lower()=='belum' else 'K: KAWIN' if x.lower()=='kawin' else 'D: CERAI' if x.lower()=='cerai' else 'FALSE'
 
-def onlyNumbersOnStr(df,column):
-    df[column] = df[column].str.split('.').str[0]
-    df[column] = df[column].apply(lambda x:re.sub(r'\D', '', x))
-    return df
+def onlyNumbersOnStr(x):
+    count_dot = x.count('.')
+    if (count_dot == 1) and (x[-2]=='.'):
+        return str(int(x))
+    return re.sub(r'\D', '', x)
 
 def uppercase_column(col):
     return col.fillna('').str.upper()
