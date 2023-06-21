@@ -67,6 +67,7 @@ def upload():
             npwp_s = find_col(df.columns,'NPWP')
             for npwp in npwp_s:
                 df[npwp] = df[npwp].apply(lambda x: x if len(x)==15 else onlyNumbersOnStr(x))
+                df[npwp] = df[npwp].apply(lambda x: x if len(x)==15 else 'False')
             del npwp_s,npwp
 
             df['Status Kawin'] = df['Status Kawin'].apply(setStatusKawin)
