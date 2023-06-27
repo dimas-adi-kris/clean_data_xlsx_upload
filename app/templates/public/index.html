@@ -18,61 +18,18 @@ block main %}
   <div class="row outer-box border text-center">
     {% if status=='success' %}
     <div class="m-5 w-100">
-      <a
-        class="btn-submit"
-        href="{{url_for('static', filename=filenamesuccess)}}"
-        >Download File</a
+      <a class="btn-submit" href="{{url_for('static', filename=filenameXlsx)}}"
+        >Download File (xlsx)</a
+      >
+      <a class="btn-submit" href="{{url_for('static', filename=filenameCsv)}}"
+        >Download File (csv)</a
       >
     </div>
     {% endif %}
     <div class="row inner-box border text-center w-100">
-      {% if status=='success' %} 
-      {%for i in range(0, 1) %}
-<div class="table">
-  <table id="DataTable" class="cell-border" style="width: 100%">
-    <thead>
-      <th>No.</th>
-      {%for i in range(0, column|length)%}
-      <th>
-        {{column[i]}} {% if column[i]=="Agama" %}
-        <i
-          class="fa fa-info-circle"
-          data-toggle="tooltip"
-          data-placement="top"
-          title="ISLAM, HINDU, BUDHA, PROTESTAN, KATHOLIK, KONGHUCU"
-        ></i>
-      </th>
-      {% endif %} {%endfor%}
-    </thead>
-    <!-- prettier-ignore -->
-    <tbody>
-        {%for i in range(0, df_processed|length)%}
-        <tr>
-          <td>{{i}}</td>
-          {%for j in range(0, df_processed[i]|length)%}
-          {% set data_lama = df_upload[i][j]|string| replace("'", "")  %}
-          {% set data_baru = df_processed[i][j]|string| replace("'", "")  %}
-          <td
-          {% if (data_lama != data_baru) or (data_lama == "") %}
-          class="beda"
-          {% endif %}
-          >
-          <p style="font-weight: bold;">
-              {{data_baru}} 
-          </p>
-          {% if data_lama != data_baru %}
-          <p style="color: rgb(80, 80, 80);">Data Sebelumnya : {{data_lama}}</p>
-          {% endif %}
-          </td>
-          {%endfor%}
-        </tr>
-        {%endfor%}
-      </tbody>
-    {%endfor%}
-  </table>
-</div>
-
-      {% else %}
+      {% if status=='success' %} {% with
+      column=column,df_processed=df_processed,df_uppload=df_processed %} {%
+      include "public/table.html" %} {% endwith %} {% else %}
       <form
         class="form-custom"
         action="/upload"

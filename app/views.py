@@ -121,7 +121,7 @@ def upload():
             df = df.apply(lambda x: x.str.upper())
             df.columns = old_col
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
-            
+            df.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.csv'), index=False)
 
             return render_template(
                 "public/index.html",
@@ -130,7 +130,8 @@ def upload():
                 column=old_col,
                 df_upload=df_old.values.tolist(),
                 df_processed=df.values.tolist(),
-                filenamesuccess=fileNoExt+'.xlsx',
+                filenameXlsx=fileNoExt+'.xlsx',
+                filenameCsv=fileNoExt+'.csv',
                 filenameoriginal=fileUpload.filename
                 )
 

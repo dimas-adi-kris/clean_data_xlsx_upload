@@ -1,4 +1,4 @@
-{%for i in range(0, 1) %}
+
 <div class="table">
   <table id="DataTable" class="cell-border" style="width: 100%">
     <thead>
@@ -19,7 +19,7 @@
     <tbody>
         {%for i in range(0, df_processed|length)%}
         <tr>
-          <td>{{i}}</td>
+          <td>{{i+1}}</td>
           {%for j in range(0, df_processed[i]|length)%}
           {% set data_lama = df_upload[i][j]|string| replace("'", "")  %}
           {% set data_baru = df_processed[i][j]|string| replace("'", "")  %}
@@ -39,6 +39,5 @@
         </tr>
         {%endfor%}
       </tbody>
-    {%endfor%}
   </table>
 </div>
