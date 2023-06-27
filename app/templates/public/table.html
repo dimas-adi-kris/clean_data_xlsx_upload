@@ -1,0 +1,44 @@
+{%for i in range(0, 1) %}
+<div class="table">
+  <table id="DataTable" class="cell-border" style="width: 100%">
+    <thead>
+      <th>No.</th>
+      {%for i in range(0, column|length)%}
+      <th>
+        {{column[i]}} {% if column[i]=="Agama" %}
+        <i
+          class="fa fa-info-circle"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="ISLAM, HINDU, BUDHA, PROTESTAN, KATHOLIK, KONGHUCU"
+        ></i>
+      </th>
+      {% endif %} {%endfor%}
+    </thead>
+    <!-- prettier-ignore -->
+    <tbody>
+        {%for i in range(0, df_processed|length)%}
+        <tr>
+          <td>{{i}}</td>
+          {%for j in range(0, df_processed[i]|length)%}
+          {% set data_lama = df_upload[i][j]|string| replace("'", "")  %}
+          {% set data_baru = df_processed[i][j]|string| replace("'", "")  %}
+          <td
+          {% if (data_lama != data_baru) or (data_lama == "") %}
+          class="beda"
+          {% endif %}
+          >
+          <p style="font-weight: bold;">
+              {{data_baru}} 
+          </p>
+          {% if data_lama != data_baru %}
+          <p style="color: rgb(80, 80, 80);">Data Sebelumnya : {{data_lama}}</p>
+          {% endif %}
+          </td>
+          {%endfor%}
+        </tr>
+        {%endfor%}
+      </tbody>
+    {%endfor%}
+  </table>
+</div>

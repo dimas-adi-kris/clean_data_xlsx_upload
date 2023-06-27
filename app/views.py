@@ -203,7 +203,7 @@ def kota(y, kode_):
             if len(res_prop) == 1:
                 return res_prop.iloc[0,0]
             
-    return '9999: Di Luar Indonesia'
+    return 'NULL'
 
 def suami_istri(row):
     if row['Status Kawin'] == 'K: KAWIN':
@@ -223,7 +223,7 @@ def NIKconfirm(x):
 
 def noNumber(x):
     judgement = any(char.isdigit() for char in x)
-    return x if not judgement else ""
+    return x if not judgement else "FALSE"
 
 def update_nationality(x):
     x = x.upper()
