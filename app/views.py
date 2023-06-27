@@ -64,10 +64,9 @@ def upload():
                     return render_template("public/index.html",feedback="Tidak ada kolom "+col,status='danger') 
             df = df_old.copy()
 
-            npwp_s = find_col(df.columns,'NPWP')
-            for npwp in npwp_s:
-                df[npwp] = df[npwp].apply(npwpFormat)
-            del npwp_s,npwp
+            column_names = find_col(df.columns,'NPWP')
+            for column_name in column_names:
+                df[column_name] = df[column_name].apply(npwpFormat)
 
             df['Status Kawin'] = df['Status Kawin'].apply(setStatusKawin)
             df['Suami Istri'] = df.apply(suami_istri,axis=1)
@@ -77,33 +76,38 @@ def upload():
 
             df['Masa Berlaku Identitas'] = '999123123'
 
-            telp_s = find_col(df.columns,'telp')
-            for telp in telp_s:
-                df[telp] = df[telp].fillna('').apply(remove_special_characters).str.replace(' ','')
-                df[telp] = df[telp].apply(cleanPhoneNumber)
-            del telp_s,telp
+            column_names = find_col(df.columns,'telp')
+            for telp in column_names:
+                df[column_name] = df[column_name].fillna('').apply(remove_special_characters).str.replace(' ','')
+                df[column_name] = df[column_name].apply(cleanPhoneNumber)
 
 
-            nama_s = find_col(df.columns,'nama')
-            for nama in nama_s:
-                df[nama] = uppercase_column(df[nama])
-                df[nama] = df[nama].fillna('').apply(remove_special_characters)
-                df[nama] = df[nama].apply(noNumber)
-            del nama_s,nama
+            column_names = find_col(df.columns,'nama')
+            for column_name in column_names:
+                df[column_name] = uppercase_column(df[column_name])
+                df[column_name] = df[column_name].fillna('').apply(remove_special_characters)
+                df[column_name] = df[column_name].apply(noNumber)
 
-            jen_kel_s = find_col(df.columns,'kelamin')
-            for jen_kel in jen_kel_s:
-                df[jen_kel] = df[jen_kel].fillna('').apply(gender)
-            del jen_kel_s,jen_kel
+            column_names = find_col(df.columns,'kelamin')
+            for column_name in column_names:
+                df[column_name] = df[column_name].fillna('').apply(gender)
+            
+            
+            column_names = find_col(df.columns,'kota')
+            for column_name in column_names:
+                df[column_name] = df[column_name].fillna('NULL').replace({'':'NULL'})
 
-            tgl_s = find_col(df.columns,'tanggal')
-            for tgl in tgl_s:
-                df[tgl] = df[tgl].fillna('').apply(to_datetime)
-            del tgl_s,tgl
-            tgl_s = find_col(df.columns,'tgl')
-            for tgl in tgl_s:
-                df[tgl] = df[tgl].fillna('').apply(to_datetime)
-            del tgl_s,tgl
+            column_names = find_col(df.columns,'Propinsi')
+            for column_name in column_names:
+                df[column_name] = df[column_name].fillna('NULL').replace({'':'NULL'})
+
+            column_names = find_col(df.columns,'tanggal')
+            for column_name in column_names:
+                df[column_name] = df[column_name].fillna('').apply(to_datetime)
+            column_names = find_col(df.columns,'tgl')
+            for column_name in column_names:
+                df[column_name] = df[column_name].fillna('').apply(to_datetime)
+            del column_names,column_name
             
             df['RT'] = df['RT'].fillna('')
             df['RW'] = df['RW'].fillna('')
@@ -115,12 +119,12 @@ def upload():
             df['Agama'] = df['Agama'].fillna('').apply(agama)
             df['Kebangsaan'] = df['Kebangsaan'].apply(update_nationality)
             df['No Identitas'] = df['No Identitas'].apply(NIKconfirm)
-            df[['Kota','Propinsi']] = df[['Kota','Propinsi']]
             df['Kode Dati II CARGCD'] = df.apply(kota,args=[kode_dati],axis=1)
 
             df = df.apply(lambda x: x.str.upper())
             df.columns = old_col
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
+            df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xls'), index=False)
             df.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.csv'), index=False)
 
             return render_template(
@@ -131,6 +135,7 @@ def upload():
                 df_upload=df_old.values.tolist(),
                 df_processed=df.values.tolist(),
                 filenameXlsx=fileNoExt+'.xlsx',
+                filenameXls=fileNoExt+'.xls',
                 filenameCsv=fileNoExt+'.csv',
                 filenameoriginal=fileUpload.filename
                 )
