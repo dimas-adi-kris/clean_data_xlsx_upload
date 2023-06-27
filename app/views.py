@@ -124,7 +124,8 @@ def upload():
             df = df.apply(lambda x: x.str.upper())
             df.columns = old_col
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
-            df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xls'), index=False)
+
+            to_xls(df,os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xls'))
             df.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.csv'), index=False)
 
             return render_template(
@@ -139,6 +140,24 @@ def upload():
                 filenameCsv=fileNoExt+'.csv',
                 filenameoriginal=fileUpload.filename
                 )
+
+def to_xls(df,filename):
+    import xlwt 
+    # Membuat objek workbook menggunakan xlwt
+    workbook = xlwt.Workbook()
+
+    # Membuat sheet di workbook
+    sheet = workbook.add_sheet('Sheet1')
+    # Menulis nama kolom ke sheet
+    for col_idx, col_name in enumerate(df.columns):
+        sheet.write(0, col_idx, col_name)
+    # Menulis data DataFrame ke sheet
+    for row_idx, row_data in enumerate(df.values):
+        for col_idx, cell_data in enumerate(row_data):
+            sheet.write(row_idx+1, col_idx, cell_data)
+
+    # Menyimpan workbook ke file Excel .xls
+    workbook.save(filename)
 
 def kodePosConfirm(x):
     if len(x) != 5:
