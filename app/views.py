@@ -77,7 +77,7 @@ def upload():
             df['Masa Berlaku Identitas'] = '999123123'
 
             column_names = find_col(df.columns,'telp')
-            for telp in column_names:
+            for column_name in column_names:
                 df[column_name] = df[column_name].fillna('').apply(remove_special_characters).str.replace(' ','')
                 df[column_name] = df[column_name].apply(cleanPhoneNumber)
 
