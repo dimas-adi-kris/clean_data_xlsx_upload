@@ -1,4 +1,6 @@
 
+__pycache__\*
+app\__pycache__\*
 *.xls
 *.xlsx
 *.csv
@@ -6,5 +8,4 @@
 flaskpy/*
 flaskpy2/*
 *.pyc
-__pycache__/*
-app\__pycache__\*
+__pycache__/config.cpython-311.pyc

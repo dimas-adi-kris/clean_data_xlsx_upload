@@ -22,22 +22,33 @@ requirement :
 
 install Flask, pandas, numpy, dan regex
 
+# BUAT ENVIRONMENT PYTHON BARU
 - pip
 
 ```
 py -m pip install --user virtualenv
 py -m venv flaskpy2
+```
 
-# Untuk powershell
+
+# AKTIFKAS ENVIRONMENT
+## Untuk powershell
+```bash
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 .\flaskpy2\Scripts\activate.ps1
-
-# Untuk command prompt
+```
+## Untuk command prompt
+```bash
 .\flaskpy2\Scripts\activate
-
-# Untuk linux terminal
+```
+## Untuk linux terminal
+```bash
 source /flaskpy2/bin/activate
+```
 
+# INSTAL LIBRARY YANG AKAN DIGUNAKAN
+
+```BASH
 pip install flask==1.1.1 jinja2==2.10.3 markupsafe==2.0.1 itsdangerous==2.0.1 werkzeug==2.0.3 
 pip install pandas 
 pip install numpy 
@@ -46,7 +57,7 @@ pip install openpyxl
 pip install xlrd
 ```
 
-- conda
+<!-- - conda
 
 ```
 conda install flask -y
@@ -55,10 +66,10 @@ conda install numpy -y
 conda install regex -y
 pip install openpyxl
 pip install xlrd
-```
+``` -->
 
 
-# Jalankan
+# JALANKAN SERVER FLASK
 Untuk menjalankan flask, jalankan
 ```
 flask run

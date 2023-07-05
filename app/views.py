@@ -303,7 +303,14 @@ def format_r(x):
 def setStatusKawin(x):
     if x.upper() in ['B: BELUM KAWIN', 'K: KAWIN','D: CERAI']:
         return x.upper()
-    return 'B: BELUM KAWIN' if x.lower()=='belum' else 'K: KAWIN' if x.lower()=='kawin' else 'D: CERAI' if x.lower()=='cerai' else 'FALSE'
+    if 'BELUM' in x.upper():
+        return 'B: BELUM KAWIN'
+    if 'KAWIN' in x.upper():
+        return 'K: KAWIN'
+    if 'CERAI' in x.upper():
+        return 'D: CERAI'
+    return 'FALSE'
+    # return 'B: BELUM KAWIN' if x.lower()=='belum' else 'K: KAWIN' if x.lower()=='kawin' else 'D: CERAI' if x.lower()=='cerai' else 'FALSE'
 
 def onlyNumbersOnStr(x):
     count_dot = x.count('.')
