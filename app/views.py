@@ -35,14 +35,14 @@ def upload():
             filename = fileUpload.filename
             ext = filename.split('.')[-1]
             fileNoExt = filename.split('.')[:-1][0]+'-'+''.join(str(v) for v in np.random.randint(10, size=10).tolist())
-            filename = fileNoExt+'.'+ext
+            filename = fileNoExt+'-ori'+'.'+ext
 
             fileUpload.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
 
             if ext == 'csv':
-                df_old = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename), dtype=str)
+                df_old = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename), dtype=str, keep_default_na=False)
             elif ext in ['xlsx','xls']:
-                df_old = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename), dtype=str)
+                df_old = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename), dtype=str, keep_default_na=False)
             else:
                 return render_template("public/index.html",feedback="Format file salah",status='danger')
             df_old = df_old.fillna('')
@@ -123,10 +123,32 @@ def upload():
 
             df = df.apply(lambda x: x.str.upper())
             df.columns = old_col
-            df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xlsx'), index=False)
+            c1 = df.where(df.values==df_old.values).notna()
 
-            to_xls(df,os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.xls'))
-            df.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], fileNoExt+'.csv'), index=False)
+            # Mendapatkan indeks baris dan kolom dengan nilai False
+            false_rows, false_columns = np.where(c1 == False)
+            daftar_revisi = []
+            # Iterasi sel-sel dengan nilai False
+            for false_row, false_col in zip(*np.where(c1 == False)):
+                # Menambahkan lokasi sel yang salah ke dalam list
+                daftar_revisi.append((c1.columns[false_col], c1.index[false_row],df.iloc[false_row,false_col] , df_old.iloc[false_row, false_col]))
+
+            # Menghitung jumlah True dan False di seluruh DataFrame c1
+            total_true = c1.to_numpy().sum()
+            total_false = c1.size - total_true
+
+            # Menghitung jumlah True dan False di seluruh DataFrame c1
+            total_true = c1.to_numpy().sum()
+            total_false = c1.size - total_true
+            if total_false == 0:
+                filename_to_save = fileNoExt+'_fix'
+            else:
+                filename_to_save = fileNoExt+'_revisi'
+
+            df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.xlsx'), index=False)
+
+            to_xls(df,os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.xls'))
+            df.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.csv'), index=False)
 
             return render_template(
                 "public/index.html",
@@ -138,8 +160,20 @@ def upload():
                 filenameXlsx=fileNoExt+'.xlsx',
                 filenameXls=fileNoExt+'.xls',
                 filenameCsv=fileNoExt+'.csv',
-                filenameoriginal=fileUpload.filename
+                filenameoriginal=fileUpload.filename,
+                daftar_revisi=daftar_revisi,
                 )
+
+@app.route('/daftar-excel')
+def download_file(status_excel):
+    if status_excel == 'fix':        
+        return render_template("public/daftar_file.html")
+    return send_from_directory(app.config["IMAGE_UPLOADS"], filename, as_attachment=True)
+
+@app.route('/daftar-excel/<status>')
+def daftar_excel(status):
+    if status == 'fix':
+        return render_template("public/daftar_file.html")
 
 def to_xls(df,filename):
     import xlwt 

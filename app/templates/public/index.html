@@ -12,7 +12,6 @@ block main %}
     </h4>
     {% if feedback %}
     <p class="text-{{status}}">{{feedback}}</p>
-
     {% endif %}
   </div>
   <div class="row outer-box border text-center">
@@ -28,52 +27,58 @@ block main %}
         >Download File (csv)</a
       >
     </div>
+    <div class="w-100">
+      <!-- Button trigger modal -->
+      <button type="button" class="btn-submit" data-toggle="modal" data-target="#exampleModal">
+        Daftar Yang Telah Di Proses
+      </button>
+    </div>
     {% endif %}
     <div class="row inner-box border text-center w-100">
       {% if status=='success' %} 
       
-<div class="table">
-  <table id="DataTable" class="cell-border" style="width: 100%">
-    <thead>
-      <th>No.</th>
-      {%for i in range(0, column|length)%}
-      <th>
-        {{column[i]}} {% if column[i]=="Agama" %}
-        <i
-          class="fa fa-info-circle"
-          data-toggle="tooltip"
-          data-placement="top"
-          title="ISLAM, HINDU, BUDHA, PROTESTAN, KATHOLIK, KONGHUCU"
-        ></i>
-      </th>
-      {% endif %} {%endfor%}
-    </thead>
-    <!-- prettier-ignore -->
-    <tbody>
-        {%for i in range(0, df_processed|length)%}
-        <tr>
-          <td>{{i+1}}</td>
-          {%for j in range(0, df_processed[i]|length)%}
-          {% set data_lama = df_upload[i][j]|string| replace("'", "")  %}
-          {% set data_baru = df_processed[i][j]|string| replace("'", "")  %}
-          <td
-          {% if (data_lama != data_baru) or (data_lama == "") %}
-          class="beda"
-          {% endif %}
-          >
-          <p style="font-weight: bold;">
-              {{data_baru}} 
-          </p>
-          {% if data_lama != data_baru %}
-          <p style="color: rgb(80, 80, 80);">Data Sebelumnya : {{data_lama}}</p>
-          {% endif %}
-          </td>
-          {%endfor%}
-        </tr>
-        {%endfor%}
-      </tbody>
-  </table>
-</div>
+      <div class="table">
+        <table id="DataTable" class="cell-border" style="width: 100%">
+          <thead>
+            <th>No.</th>
+            {%for i in range(0, column|length)%}
+            <th>
+              {{column[i]}} {% if column[i]=="Agama" %}
+              <i
+                class="fa fa-info-circle"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="ISLAM, HINDU, BUDHA, PROTESTAN, KATHOLIK, KONGHUCU"
+              ></i>
+            </th>
+            {% endif %} {%endfor%}
+          </thead>
+          <!-- prettier-ignore -->
+          <tbody>
+              {%for i in range(0, df_processed|length)%}
+              <tr>
+                <td>{{i+1}}</td>
+                {%for j in range(0, df_processed[i]|length)%}
+                {% set data_lama = df_upload[i][j]|string| replace("'", "")  %}
+                {% set data_baru = df_processed[i][j]|string| replace("'", "")  %}
+                <td
+                  {% if (data_lama != data_baru) or (data_lama == "") %}
+                  class="beda"
+                  {% endif %}
+                  >
+                  <p style="font-weight: bold;">
+                      {{data_baru}} 
+                  </p>
+                  {% if data_lama != data_baru %}
+                  <p style="color: rgb(80, 80, 80);">Data Sebelumnya : {{data_lama}}</p>
+                  {% endif %}
+                </td>
+                {%endfor%}
+              </tr>
+              {%endfor%}
+            </tbody>
+        </table>
+      </div>
 
       {% else %}
       <form
@@ -98,7 +103,49 @@ block main %}
     </div>
   </div>
 </div>
-<!--  big container -->
+
+{% if status=='success' %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Daftar Revisi</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Jika ada yang tidak bisa diperbaiki oleh sistem ini, mohon diperbaiki secara manual 🙏</p>
+        <p>Dengan cara download excel ini, lakukan perubahan, dan coba upload kembali</p>
+        <table id="table-revisi">
+          <thead>
+            <th>No.</th>
+            <th>Kolom</th>
+            <th>Baris</th>
+            <th>Data Lama</th>
+            <th>Data Baru</th>
+          </thead>
+          <tbody>
+            {%for i in range(0, daftar_revisi|length)%}
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{daftar_revisi[i][0]}}</td>
+              <td>{{daftar_revisi[i][1]+1}}</td>
+              <td>{{daftar_revisi[i][2]}}</td>
+              <td>{{daftar_revisi[i][3]}}</td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
 
 {% endblock %} {% block script %}
 <script>
@@ -110,6 +157,12 @@ block main %}
     fixedColumns: {
       left: 1,
     },
+  });
+  $("#table-revisi").DataTable({
+    paging: false,
+    ordering: false,
+    info: false,
+    searching: false,
   });
   $("#btn-submit").hide();
   $("#excel_file").change(function () {
