@@ -9,6 +9,9 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from app.helpers import find_col
 
+import datetime
+
+
 with open("./Kode Dati.json",'r') as f:
     kode_dati = pd.DataFrame(json.loads(f.read()))
 
@@ -34,7 +37,10 @@ def upload():
 
             filename = fileUpload.filename
             ext = filename.split('.')[-1]
-            fileNoExt = filename.split('.')[:-1][0]+'-'+''.join(str(v) for v in np.random.randint(10, size=10).tolist())
+            # Mendapatkan waktu saat ini
+            waktu_sekarang = datetime.datetime.now()
+            waktu = waktu_sekarang.strftime("%Y%m%d%H%M%S")
+            fileNoExt = filename.split('.')[:-1][0]+'-'+waktu+'-'+''.join(str(v) for v in np.random.randint(3, size=3).tolist())
             filename = fileNoExt+'-ori'+'.'+ext
 
             fileUpload.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
