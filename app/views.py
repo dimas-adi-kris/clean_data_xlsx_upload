@@ -171,14 +171,27 @@ def upload():
 def daftar_excel(status=None):
     daftar_file = glob.glob(app.config["IMAGE_UPLOADS"]+'/*')
 
-    daftar_nama_file = []
+    daftar_nama_file_pre = []
 
     for i in daftar_file:
         hasil  = i.split('.')[1].split('\\')[-1]
         if not hasil.endswith("-ori"):
-            daftar_nama_file.append(hasil)
-    
+            daftar_nama_file_pre.append(hasil)
+    daftar_nama_file_pre = np.unique(daftar_nama_file_pre)
+    daftar_nama_file = []
+    if status == "Semua":
+        daftar_nama_file = daftar_nama_file_pre
+    elif status:
+        for nama_file in daftar_nama_file_pre:
+
+            if nama_file.endswith(status):
+                daftar_nama_file.append(nama_file)
+    else:
+        daftar_nama_file = daftar_nama_file_pre
+
     daftar_nama_file = np.unique(daftar_nama_file)
+    if status:
+        return render_template("public/table_daftar_excel.html",daftar_nama_file=daftar_nama_file,status=status)
     return render_template(
         "public/daftar_file.html",
         daftar_nama_file=daftar_nama_file,
