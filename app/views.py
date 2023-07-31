@@ -158,9 +158,9 @@ def upload():
                 column=old_col,
                 df_upload=df_old.values.tolist(),
                 df_processed=df.values.tolist(),
-                filenameXlsx=fileNoExt+'.xlsx',
-                filenameXls=fileNoExt+'.xls',
-                filenameCsv=fileNoExt+'.csv',
+                filenameXlsx=filename_to_save+'.xlsx',
+                filenameXls=filename_to_save+'.xls',
+                filenameCsv=filename_to_save+'.csv',
                 filenameoriginal=fileUpload.filename,
                 daftar_revisi=daftar_revisi,
                 )

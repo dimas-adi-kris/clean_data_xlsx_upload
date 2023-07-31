@@ -17,13 +17,13 @@ block main %}
   <div class="row outer-box border text-center">
     {% if status=='success' %}
       <div class="m-5 w-100">
-        <a class="btn-submit" href="{{url_for('static', filename=filenameXlsx)}}"
+        <a class="btn-submit" href="{{url_for('static', filename='uploads/'+filenameXlsx)}}"
           >Download File (xlsx)</a
         >
-        <a class="btn-submit" href="{{url_for('static', filename=filenameXls)}}"
+        <a class="btn-submit" href="{{url_for('static', filename='uploads/'+filenameXls)}}"
           >Download File (xls)</a
         >
-        <a class="btn-submit" href="{{url_for('static', filename=filenameCsv)}}"
+        <a class="btn-submit" href="{{url_for('static', filename='uploads/'+filenameCsv)}}"
           >Download File (csv)</a
         >
       </div>
