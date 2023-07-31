@@ -9,7 +9,7 @@ class ProductionConfig(Config):
     DB_USERNAME = "admin"
     DB_PASSWORD = "example"
 
-    IMAGE_UPLOADS = "./app/static"
+    IMAGE_UPLOADS = "./app/static/uploads"
 
     SESSION_COOKIE_SECURE = False
 
@@ -20,7 +20,7 @@ class DevelopmentConfig(Config):
     DB_USERNAME = "admin"
     DB_PASSWORD = "example"
 
-    IMAGE_UPLOADS = "./app/static"
+    IMAGE_UPLOADS = "./app/static/uploads"
 
     SESSION_COOKIE_SECURE = False
     TEMPLATES_AUTO_RELOAD = True

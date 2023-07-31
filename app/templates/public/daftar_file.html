@@ -1,0 +1,114 @@
+{% extends "public/template.html" %} {% block title %}Main App{% endblock %} {%
+block main %}
+
+<!--   Big container   -->
+<div class="container">
+  <div class="row text-center justify-content-center">
+    <div class="row" style="display: inline; width: 100%">
+      <h2>Excel data cleaner</h2>
+    </div>
+    <h4>
+      Perbaiki data excel dari format format. Upload satu file excel dan temukan
+      perbedaannya
+    </h4>
+    {% if feedback %}
+    <p class="text-{{status}}">{{feedback}}</p>
+    {% endif %}
+  </div>
+  <div class="row outer-box border text-center" id="daftar-excel">
+    <!-- <div class="container">
+      <div class="col-2">
+        <div class="row form-group">
+          <select
+            name="filter-file"
+            class="form-control"
+            id="exampleFormControlSelect1"
+          >
+            <option value="Semua" selected>Semua</option>
+            <option value="fix">Fix</option>
+            <option value="revisi">Perlu revisi</option>
+          </select>
+        </div>
+      </div>
+    </div> -->
+    <div class="row inner-box border text-center table">
+      <table id="DataTable" class="cell-border" style="width: 100%">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Nama File</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for i in range(0, daftar_nama_file|length)%}
+          <tr>
+            <td>{{i+1}}</td>
+            <td>{{daftar_nama_file[i]}}</td>
+            <td>
+              <a
+                class="btn btn-primary"
+                href="{{url_for('static', filename='uploads/'+daftar_nama_file[i]+'.xlsx')}}"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Download Xlsx"
+                >Xlsx</a
+              >
+              <a
+                class="btn btn-primary"
+                href="{{url_for('static', filename='uploads/'+daftar_nama_file[i]+'.xls')}}"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Download Xls"
+                >Xls</a
+              >
+              <a
+                class="btn btn-primary"
+                href="{{url_for('static', filename='uploads/'+daftar_nama_file[i]+'.csv')}}"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Download Csv"
+                >Csv</a
+              >
+            </td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  var table = $("#DataTable").DataTable({
+    paging: false,
+    ordering: false,
+    info: false,
+    searching: false,
+    fixedColumns: {
+      left: 1,
+    },
+  });
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    // $('[name="filter-file"]').on("change", function () {
+    //   var filter = $(this).val();
+
+    //   table.destroy();
+    //   $("#DataTable").remove();
+    //   $(".table-responsive").load("/daftar-file/" + filter, function () {
+    //     table = $("#DataTable").DataTable({
+    //       paging: false,
+    //       ordering: false,
+    //       info: false,
+    //       searching: false,
+    //       fixedColumns: {
+    //         left: 1,
+    //       },
+    //     });
+    //   });
+    // });
+  });
+</script>
+{% endblock %}

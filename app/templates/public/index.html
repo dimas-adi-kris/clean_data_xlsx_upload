@@ -16,23 +16,23 @@ block main %}
   </div>
   <div class="row outer-box border text-center">
     {% if status=='success' %}
-    <div class="m-5 w-100">
-      <a class="btn-submit" href="{{url_for('static', filename=filenameXlsx)}}"
-        >Download File (xlsx)</a
-      >
-      <a class="btn-submit" href="{{url_for('static', filename=filenameXls)}}"
-        >Download File (xls)</a
-      >
-      <a class="btn-submit" href="{{url_for('static', filename=filenameCsv)}}"
-        >Download File (csv)</a
-      >
-    </div>
-    <div class="w-100">
-      <!-- Button trigger modal -->
-      <button type="button" class="btn-submit" data-toggle="modal" data-target="#exampleModal">
-        Daftar Yang Telah Di Proses
-      </button>
-    </div>
+      <div class="m-5 w-100">
+        <a class="btn-submit" href="{{url_for('static', filename=filenameXlsx)}}"
+          >Download File (xlsx)</a
+        >
+        <a class="btn-submit" href="{{url_for('static', filename=filenameXls)}}"
+          >Download File (xls)</a
+        >
+        <a class="btn-submit" href="{{url_for('static', filename=filenameCsv)}}"
+          >Download File (csv)</a
+        >
+      </div>
+      <div class="w-100">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn-submit" data-toggle="modal" data-target="#exampleModal">
+          Daftar Yang Telah Di Proses
+        </button>
+      </div>
     {% endif %}
     <div class="row inner-box border text-center w-100">
       {% if status=='success' %} 

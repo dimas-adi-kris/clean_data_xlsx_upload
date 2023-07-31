@@ -1,0 +1,43 @@
+<table id="DataTable" class="cell-border" style="width: 100%">
+  <thead>
+    <tr>
+      <th>No.</th>
+      <th>Nama File</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for i in range(0, daftar_nama_file|length)%}
+    <tr>
+      <td>{{i+1}}</td>
+      <td>{{daftar_nama_file[i]}}</td>
+      <td>
+        <a
+          class="btn btn-primary"
+          href="{{url_for('static', filename='uploads/'+daftar_nama_file[i]+'.xlsx')}}"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="Download Xlsx"
+          >Xlsx</a
+        >
+        <a
+          class="btn btn-primary"
+          href="{{url_for('static', filename='uploads/'+daftar_nama_file[i]+'.xls')}}"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="Download Xls"
+          >Xls</a
+        >
+        <a
+          class="btn btn-primary"
+          href="{{url_for('static', filename='uploads/'+daftar_nama_file[i]+'.csv')}}"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="Download Csv"
+          >Csv</a
+        >
+      </td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>

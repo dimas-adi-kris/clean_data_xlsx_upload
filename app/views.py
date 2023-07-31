@@ -1,4 +1,4 @@
-import os,re
+import os,re,glob
 import json
 import pandas as pd
 import numpy as np
@@ -26,7 +26,7 @@ def index():
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
-    hists = os.listdir(app.config["IMAGE_UPLOADS"])
+    os.makedirs(app.config["IMAGE_UPLOADS"], exist_ok=True)
     if request.method == "POST":
 
         if request.files:
@@ -141,9 +141,10 @@ def upload():
             total_true = c1.to_numpy().sum()
             total_false = c1.size - total_true
             if total_false == 0:
-                filename_to_save = fileNoExt+'_fix'
+                filename_to_save = fileNoExt+'-fix'
             else:
-                filename_to_save = fileNoExt+'_revisi'
+                filename_to_save = fileNoExt+'-revisi'
+            os.makedirs(app.config["IMAGE_UPLOADS"], exist_ok=True)
 
             df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.xlsx'), index=False)
 
@@ -164,16 +165,25 @@ def upload():
                 daftar_revisi=daftar_revisi,
                 )
 
-@app.route('/daftar-excel')
-def download_file(status_excel):
-    if status_excel == 'fix':        
-        return render_template("public/daftar_file.html")
-    return send_from_directory(app.config["IMAGE_UPLOADS"], filename, as_attachment=True)
 
+@app.route('/daftar-excel/')
 @app.route('/daftar-excel/<status>')
-def daftar_excel(status):
-    if status == 'fix':
-        return render_template("public/daftar_file.html")
+def daftar_excel(status=None):
+    daftar_file = glob.glob(app.config["IMAGE_UPLOADS"]+'/*')
+
+    daftar_nama_file = []
+
+    for i in daftar_file:
+        hasil  = i.split('.')[1].split('\\')[-1]
+        if not hasil.endswith("-ori"):
+            daftar_nama_file.append(hasil)
+    
+    daftar_nama_file = np.unique(daftar_nama_file)
+    return render_template(
+        "public/daftar_file.html",
+        daftar_nama_file=daftar_nama_file,
+        status=status
+        )
 
 def to_xls(df,filename):
     import xlwt 
