@@ -12,6 +12,9 @@ from app.helpers import find_col
 import datetime
 
 
+from app.controllers.HomeController import home
+
+
 with open("./Kode Dati.json",'r') as f:
     kode_dati = pd.DataFrame(json.loads(f.read()))
 
@@ -20,11 +23,7 @@ wilayah = kode_dati['Kode Dati II'].str.split(':').str[1].str.strip().str.split(
 kode_dati['Propinsi'] = wilayah.str[0].str.strip().str.upper()
 kode_dati['Kota Kab'] = wilayah.str[1].str.strip().str.upper()
 
-
-@app.route("/", methods=["GET", "POST"])
-@app.route('/index', methods=["GET", "POST"])
-def index():
-	return render_template("public/index.html")
+app.register_blueprint(home)
 
 
 @app.route("/upload", methods=["GET", "POST"])

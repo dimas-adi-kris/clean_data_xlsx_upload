@@ -55,6 +55,8 @@ pip install numpy
 pip install regex 
 pip install openpyxl
 pip install xlrd
+
+pip install --upgrade firebase-admin
 ```
 
 <!-- - conda
