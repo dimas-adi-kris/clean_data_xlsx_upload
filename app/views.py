@@ -158,7 +158,7 @@ def upload():
             df.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.csv'), index=False)
 
             return render_template(
-                "public/index.html",
+                "pages/home/index.html",
                 feedback="",
                 status='success',
                 column=old_col,
@@ -199,7 +199,7 @@ def daftar_excel(status=None):
     if status:
         return render_template("public/table_daftar_excel.html",daftar_nama_file=daftar_nama_file,status=status)
     return render_template(
-        "public/daftar_file.html",
+        "pages/daftar_file/index.html",
         daftar_nama_file=daftar_nama_file,
         status=status
         )
