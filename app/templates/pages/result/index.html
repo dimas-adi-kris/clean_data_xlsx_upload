@@ -1,0 +1,171 @@
+{% extends "includes/templates.html" %} {% block title %}Main App{% endblock %}
+{% block main %}
+
+    <!--   Big container   -->
+    <div class="container">
+      <div class="row text-center justify-content-center">
+        <div class="row" style="display: inline; width: 100%">
+          <h2>Excel data cleaner</h2>
+        </div>
+        <h4>
+          Perbaiki data excel dari format format. Upload satu file excel dan temukan
+          perbedaannya
+        </h4>
+        
+        {% if feedback %}
+        <p class="text-{{status}}">{{feedback}}</p>
+        {% endif %}
+      </div>
+      <div class="row outer-box border text-center">
+        
+          <div class="m-5 w-100">
+            <a class="btn-submit" href="{{url_for('static', filename='uploads/'+filenameXls)}}"
+              >Download File (xls)</a
+            >
+          </div>
+          <div class="w-100">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn-submit" data-toggle="modal" data-target="#exampleModal">
+              Daftar Yang Telah Di Proses
+            </button>
+          </div>
+        
+        <div class="row inner-box border text-center w-100">
+
+            <div class="table-result">
+                <table id="DataTable" class="cell-border" style="width: 100%">
+                  <thead>
+                    <th>No.</th>
+                    {%for i in range(0, column|length)%}
+                    <th>
+                      {{column[i]}} {% if column[i]=="Agama" %}
+                      <i
+                        class="fa fa-info-circle"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="ISLAM, HINDU, BUDHA, PROTESTAN, KATHOLIK, KONGHUCU"
+                      ></i>
+                    </th>
+                    {% endif %} {%endfor%}
+                  </thead>
+                  <!-- prettier-ignore -->
+                  <tbody>
+                      {%for i in range(0, df_processed|length)%}
+                      <tr>
+                        <td>{{i+1}}</td>
+                        {%for j in range(0, df_processed[i]|length)%}
+                        {% set data_lama = df_upload[i][j]|string| replace("'", "")  %}
+                        {% set data_baru = df_processed[i][j]|string| replace("'", "")  %}
+                        <td
+                          {% if (data_lama != data_baru) or (data_lama == "") %}
+                          class="beda"
+                          {% endif %}
+                          >
+                          <p style="font-weight: bold;">
+                              {{data_baru}} 
+                          </p>
+                          {% if data_lama != data_baru %}
+                          <p style="color: rgb(80, 80, 80);">Data Sebelumnya : {{data_lama}}</p>
+                          {% endif %}
+                        </td>
+                        {%endfor%}
+                      </tr>
+                      {%endfor%}
+                    </tbody>
+                </table>
+              </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Daftar Revisi</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Jika ada yang tidak bisa diperbaiki oleh sistem ini, mohon diperbaiki secara manual 🙏</p>
+            <p>Dengan cara download excel ini, lakukan perubahan, dan coba upload kembali</p>
+            <table id="table-revisi">
+              <thead>
+                <th>No.</th>
+                <th>Kolom</th>
+                <th>Baris</th>
+                <th>Data Lama</th>
+                <th>Data Baru</th>
+              </thead>
+              <tbody>
+                {%for i in range(0, daftar_revisi|length)%}
+                <tr>
+                  <td>{{i+1}}</td>
+                  <td>{{daftar_revisi[i][0]}}</td>
+                  <td>{{daftar_revisi[i][1]+1}}</td>
+                  <td>{{daftar_revisi[i][2]}}</td>
+                  <td>{{daftar_revisi[i][3]}}</td>
+                </tr>
+                {%endfor%}
+              </tbody>
+              
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+
+    <footer></footer>
+    <div class="footer">
+      <div class="container text-center"></div>
+    </div>
+    
+    {% endblock %} {% block script %}
+<script>
+  var table = $("#DataTable").DataTable({
+    paging: false,
+    ordering: false,
+    info: false,
+    searching: false,
+    fixedColumns: {
+      left: 1,
+    },
+  });
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $('[name="filter-file"]').on("change", function () {
+      var filter = $(this).val();
+      table.destroy();
+      $("#DataTable").remove();
+      const a = $("#tabel-daftar-nama-file");
+      let url = "{{ url_for('excel.daftar_excel') }}" + filter;
+      fetch(url)
+        .then((response) => response.text())
+        .then((data) => {
+          $("#tabel-daftar-nama-file").html(data);
+
+          // Inisialisasi tabel menggunakan DataTable setelah data dimuat
+          table = $("#DataTable").DataTable({
+            paging: false,
+            ordering: false,
+            info: false,
+            searching: false,
+            fixedColumns: {
+              left: 1,
+            },
+          });
+        })
+        .catch((error) => console.error("Error:", error));
+    });
+  });
+</script>
+{% endblock %}

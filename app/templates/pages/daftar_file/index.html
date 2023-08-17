@@ -100,7 +100,7 @@
       table.destroy();
       $("#DataTable").remove();
       const a = $("#tabel-daftar-nama-file");
-      let url = "{{ url_for('daftar_excel') }}" + filter;
+      let url = "{{ url_for('excel.daftar_excel') }}" + filter;
       fetch(url)
         .then((response) => response.text())
         .then((data) => {

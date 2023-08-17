@@ -1,4 +1,4 @@
-# app/controllers/main_controller.py
+
 from flask import render_template, Blueprint
 # from app.models.user import User
 from app.models.add_data import add_new_data

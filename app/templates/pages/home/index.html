@@ -1,13 +1,10 @@
-{% extends "public/template.html" %} {% block title %}Main App{% endblock %} {%
+{% extends "includes/templates.html" %} {% block title %}Main App{% endblock %} {%
     block main %}
     <!--   Big container   -->
     <div class="container">
       <div class="row text-center justify-content-center">
         <div class="row" style="display: inline; width: 100%">
           <h2>Excel data cleaner</h2>
-          <p>            
-            <a href="{{url_for('home.add_data')}}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore nemo quisquam debitis ab, aperiam neque architecto exercitationem repellat in nisi corrupti quasi laborum aut quia, assumenda numquam voluptas harum ea?</a>
-          </p>
         </div>
         <h4>
           Perbaiki data excel dari format format. Upload satu file excel dan temukan
@@ -20,14 +17,8 @@
       <div class="row outer-box border text-center">
         {% if status=='success' %}
           <div class="m-5 w-100">
-            <a class="btn-submit" href="{{url_for('static', filename='uploads/'+filenameXlsx)}}"
-              >Download File (xlsx)</a
-            >
             <a class="btn-submit" href="{{url_for('static', filename='uploads/'+filenameXls)}}"
               >Download File (xls)</a
-            >
-            <a class="btn-submit" href="{{url_for('static', filename='uploads/'+filenameCsv)}}"
-              >Download File (csv)</a
             >
           </div>
           <div class="w-100">
@@ -86,7 +77,7 @@
           {% else %}
           <form
             class="form-custom"
-            action="/upload"
+            action="/result"
             method="post"
             enctype="multipart/form-data"
           >
