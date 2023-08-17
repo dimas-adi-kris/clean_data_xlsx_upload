@@ -42,9 +42,9 @@ def to_xls(df,filename):
 
 def kodePosConfirm(x):
     if len(x) != 5:
-        return "PANJANG KODE HARUS 5 ANGKA"
+        return ""
     elif x[-3:] == '000':
-        return "3 ANGKA BELAKANG TIDAK BOLEH 000"
+        return ""
     else:
         return x
 

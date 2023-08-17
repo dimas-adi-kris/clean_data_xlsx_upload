@@ -10,6 +10,7 @@ class ProductionConfig(Config):
     DB_PASSWORD = "example"
 
     IMAGE_UPLOADS = "./app/static/uploads"
+    EXCEL_UPLOADS = "./app/static/uploads"
 
     SESSION_COOKIE_SECURE = False
 
@@ -21,6 +22,7 @@ class DevelopmentConfig(Config):
     DB_PASSWORD = "example"
 
     IMAGE_UPLOADS = "./app/static/uploads"
+    EXCEL_UPLOADS = "./app/static/uploads"
 
     SESSION_COOKIE_SECURE = False
     TEMPLATES_AUTO_RELOAD = True

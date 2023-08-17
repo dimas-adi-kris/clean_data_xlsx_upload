@@ -17,7 +17,7 @@ excel = Blueprint('excel', __name__)
 
 @excel.route("/result", methods=["POST"])
 def result():
-    os.makedirs(app.config["IMAGE_UPLOADS"], exist_ok=True)
+    os.makedirs(app.config["EXCEL_UPLOADS"], exist_ok=True)
     if request.files:
         fileUpload = request.files["excel_file"]
 
@@ -29,12 +29,12 @@ def result():
         fileNoExt = filename.split('.')[:-1][0]+'-'+waktu+'-'+''.join(str(v) for v in np.random.randint(3, size=3).tolist())
         filename = fileNoExt+'-ori'+'.'+ext
 
-        fileUpload.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+        fileUpload.save(os.path.join(app.config["EXCEL_UPLOADS"], filename))
 
         if ext == 'csv':
-            df_old = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename), dtype=str, keep_default_na=False)
+            df_old = pd.read_csv(os.path.join(app.config["EXCEL_UPLOADS"], filename), dtype=str, keep_default_na=False)
         elif ext in ['xlsx','xls']:
-            df_old = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename), dtype=str, keep_default_na=False)
+            df_old = pd.read_excel(os.path.join(app.config["EXCEL_UPLOADS"], filename), dtype=str, keep_default_na=False)
         else:
             return render_template("public/index.html",feedback="Format file salah",status='danger')
         df_old = df_old.fillna('')
@@ -142,33 +142,38 @@ def result():
 
             total_true = c1.to_numpy().sum()
             total_false = c1.size - total_true
-            os.makedirs(app.config["IMAGE_UPLOADS"], exist_ok=True)
+            os.makedirs(app.config["EXCEL_UPLOADS"], exist_ok=True)
             if total_false == 0:
+                os.makedirs(app.config["EXCEL_UPLOADS"]+'/fix/', exist_ok=True)
                 filename_to_save = fileNoExt+'-fix'
+                to_xls(df,os.path.join(app.config["EXCEL_UPLOADS"]+'/fix/', filename_to_save+'.xls'))
             else:
-                filename_to_save = fileNoExt+'-revisi'
+                os.makedirs(app.config["EXCEL_UPLOADS"]+'/revisi/', exist_ok=True)
+                filename_to_save = fileNoExt+'-full'
+                to_xls(df,os.path.join(app.config["EXCEL_UPLOADS"]+'/revisi/', filename_to_save+'.xls'))
 
                 filename_not_valid = fileNoExt+'-not-valid-revisi'
                 df_not_valid = df[df[column_checked].apply(lambda x: any([val == '' for val in x]), axis=1)]
-                to_xls(df_not_valid,os.path.join(app.config["IMAGE_UPLOADS"], filename_not_valid+'.xls'))
+                to_xls(df_not_valid,os.path.join(app.config["EXCEL_UPLOADS"]+'/revisi/', filename_not_valid+'.xls'))
 
                 filename_valid = fileNoExt+'-valid-revisi'
                 df_valid = df[df[column_checked].apply(lambda x: all(val != '' for val in x), axis=1)]
-                to_xls(df_valid,os.path.join(app.config["IMAGE_UPLOADS"], filename_valid+'.xls'))
+                to_xls(df_valid,os.path.join(app.config["EXCEL_UPLOADS"]+'/revisi/', filename_valid+'.xls'))
+
+                empty_row_counts = {col: len(df[df[col] == '']) for col in column_checked}
+                df.columns = old_col
+                with open(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.json'), 'w+') as f:
+                    json.dump(empty_row_counts, f, indent=4)
 
             
 
 
 
-            empty_row_counts = {col: len(df[df[col] == '']) for col in column_checked}
-            df.columns = old_col
-            with open(os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.json'), 'w+') as f:
-                json.dump(empty_row_counts, f, indent=4)
 
 
-            # df.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.xlsx'), index=False)
-            to_xls(df,os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.xls'))
-            # df.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename_to_save+'.csv'), index=False)
+            # df.to_excel(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xlsx'), index=False)
+            # to_xls(df,os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xls'))
+            # df.to_csv(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.csv'), index=False)
 
             return render_template(
                 "pages/result/index.html",
@@ -183,6 +188,8 @@ def result():
                 # filenameoriginal=fileUpload.filename,
                 filenameoriginal=filename,
                 daftar_revisi=daftar_revisi,
+                total_false=total_false,
+                fileNoExt=fileNoExt,
                 )
         except Exception as e:
             print(filename,e)
@@ -194,7 +201,7 @@ def result():
 @excel.route('/daftar-excel/')
 @excel.route('/daftar-excel/<status>')
 def daftar_excel(status=None):
-    daftar_file = glob.glob(app.config["IMAGE_UPLOADS"]+'/*')
+    daftar_file = glob.glob(app.config["EXCEL_UPLOADS"]+'/*')
 
     daftar_nama_file_pre = []
 
@@ -225,9 +232,9 @@ def daftar_excel(status=None):
 
 @excel.route('/daftar-excel/detail-kolom/<filename>')
 def detail_kolom(filename):
-    df = pd.read_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename+'.xls'))
+    
     return render_template(
         "pages/daftar_file/detail_kolom.html",
-        df=df,
+        # df=df,
         filename=filename
         )
