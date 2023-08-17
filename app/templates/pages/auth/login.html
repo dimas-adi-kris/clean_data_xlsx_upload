@@ -1,0 +1,81 @@
+<body class="bg-gradient-primary vh-100 vw-100 pt-5">
+  <div class="pt-5">
+    <div class="pt-5">
+      <main class="pt-5">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-6">
+              <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-5">
+                  <div class="row">
+                    <form
+                      class="user col-lg"
+                      method="POST"
+                      action="{{url_for('auth.login')}}"
+                    >
+                      <input
+                        type="hidden"
+                        name="_token"
+                        value="VvU3JNtOQKMwt5KoypOgGTjNQMcGcCXNU8ZrIjkJ"
+                      />
+                      <div class="form-group">
+                        <input
+                          id="text"
+                          type="text"
+                          class="form-control form-control-user"
+                          name="login"
+                          value=""
+                          placeholder="Masukkan email atau username..."
+                          required
+                          autocomplete="login"
+                          autofocus
+                        />
+                      </div>
+
+                      <div class="form-group">
+                        <input
+                          id="password"
+                          type="password"
+                          class="form-control form-control-user"
+                          name="password"
+                          required
+                          autocomplete="current-password"
+                          placeholder="Password"
+                        />
+                      </div>
+
+                      <div class="form-group ml-2">
+                        <div class="custom-control custom-checkbox small">
+                          <input
+                            class="custom-control-input"
+                            type="checkbox"
+                            name="remember"
+                            id="remember"
+                          />
+                          <label class="custom-control-label" for="remember">
+                            Remember Me
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="form-group row mb-0">
+                        <div class="col-md-12">
+                          <button
+                            type="submit"
+                            class="btn btn-primary btn-user btn-block"
+                          >
+                            Login
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
