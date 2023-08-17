@@ -201,31 +201,65 @@ def result():
 @excel.route('/daftar-excel/')
 @excel.route('/daftar-excel/<status>')
 def daftar_excel(status=None):
-    daftar_file = glob.glob(app.config["EXCEL_UPLOADS"]+'/*')
+    # daftar_file = glob.glob(app.config["EXCEL_UPLOADS"]+'/*')
 
-    daftar_nama_file_pre = []
+    # daftar_nama_file_pre = []
 
-    for i in daftar_file:
-        hasil  = i.split('.')[1].split('\\')[-1]
-        if not hasil.endswith("-ori"):
-            daftar_nama_file_pre.append(hasil)
-    daftar_nama_file_pre = np.unique(daftar_nama_file_pre)
-    daftar_nama_file = []
-    if status == "Semua":
-        daftar_nama_file = daftar_nama_file_pre
-    elif status:
-        for nama_file in daftar_nama_file_pre:
-            if nama_file.endswith(status):
-                daftar_nama_file.append(nama_file)
-    else:
-        daftar_nama_file = daftar_nama_file_pre
+    # for i in daftar_file:
+    #     hasil  = i.split('.')[1].split('\\')[-1]
+    #     if not hasil.endswith("-ori"):
+    #         daftar_nama_file_pre.append(hasil)
+    # daftar_nama_file_pre = np.unique(daftar_nama_file_pre)
+    # daftar_nama_file = []
+    # if status == "Semua":
+    #     daftar_nama_file = daftar_nama_file_pre
+    # elif status:
+    #     for nama_file in daftar_nama_file_pre:
+    #         if nama_file.endswith(status):
+    #             daftar_nama_file.append(nama_file)
+    # else:
+    #     daftar_nama_file = daftar_nama_file_pre
 
-    daftar_nama_file = np.unique(daftar_nama_file)
+    # daftar_nama_file = np.unique(daftar_nama_file)
+    paths = glob.glob(app.config["EXCEL_UPLOADS"]+'/*/*.xls')
+    path_dict = {}
+    if (status == "Semua") or (status == None) or (status == ''):        
+        for path in paths:
+            if 'fix' in path:
+                no_ext = path.split('.')[-2].split('\\')[-1]
+                path_dict[no_ext] = 'fix'
+            else:
+                no_ext = path.split('.')[-2].split('\\')[-1]
+                if no_ext[-5:] == '-full':
+                    no_ext = no_ext[:-5]
+                elif no_ext[-17:] == '-not-valid-revisi':
+                    no_ext = no_ext[:-17]
+                elif no_ext[-13:] == '-valid-revisi':
+                    no_ext = no_ext[:-13]
+                path_dict[no_ext] = 'revisi'
+    elif status == 'revisi':
+        for path in paths:
+            if 'revisi' in path:
+                no_ext = path.split('.')[-2].split('\\')[-1]
+                if no_ext[-5:] == '-full':
+                    no_ext = no_ext[:-5]
+                elif no_ext[-17:] == '-not-valid-revisi':
+                    no_ext = no_ext[:-17]
+                elif no_ext[-13:] == '-valid-revisi':
+                    no_ext = no_ext[:-13]
+                path_dict[no_ext] = 'revisi'
+    elif status == 'fix':
+        for path in paths:
+            if 'fix' in path:
+                no_ext = path.split('.')[-2].split('\\')[-1]
+                path_dict[no_ext] = 'fix'
     if status:
-        return render_template("pages/daftar_file/table_daftar_excel.html",daftar_nama_file=daftar_nama_file,status=status)
+        return render_template("pages/daftar_file/table_daftar_excel.html",daftar_nama_file=list(path_dict.keys()),
+        path_dict=path_dict,status=status)
     return render_template(
         "pages/daftar_file/index.html",
-        daftar_nama_file=daftar_nama_file,
+        daftar_nama_file=list(path_dict.keys()),
+        path_dict=path_dict,
         status=status
         )
 
