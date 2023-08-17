@@ -55,8 +55,11 @@ pip install numpy
 pip install regex 
 pip install openpyxl
 pip install xlrd
+pip install xlwt
+pip install ordereduuid
 
 pip install --upgrade firebase-admin
+
 ```
 
 <!-- - conda
@@ -152,3 +155,16 @@ Werkzeug adalah pustaka Python yang digunakan sebagai utilitas web untuk membang
 
 # v 1.0
 - Rilis
+
+
+
+
+
+# jpy
+```
+py -m venv jupyter
+.\jupyter\Scripts\activate
+pip install notebook werkzeug ordereduuid firebase-admin
+jupyter notebook
+
+```

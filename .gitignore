@@ -7,5 +7,6 @@ app\__pycache__\*
 *.ipynb
 flaskpy/*
 flaskpy2/*
+jupyter/*
 *.pyc
 __pycache__/config.cpython-311.pyc

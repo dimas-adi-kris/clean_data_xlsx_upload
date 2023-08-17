@@ -86,12 +86,6 @@ input[type="file"] {
 }
 
 .table {
-  size: 100%;
-  background-color: white;
-}
-
-.table-result {
-  size: 100%;
   background-color: white;
 }
 

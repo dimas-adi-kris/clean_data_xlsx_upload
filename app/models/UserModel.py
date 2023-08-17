@@ -8,7 +8,7 @@ def get_data_by_id(id):
     del data["password"]
     return data
 
-def add_data(username,password):
+def add_user(username,password):
     id = str(OrderedUUID())
     doc_ref = db.collection("users").document(id)
     doc_ref.set({"username": username, "password": generate_password_hash(password)})
@@ -52,3 +52,21 @@ def get_data_by_username(username):
         list_users.append(data)
     return list_users
 
+def check_username(username):
+    users_ref = db.collection("users")
+    query = users_ref.where(u'username', u'==', username)
+    docs = query.stream()
+    for doc in docs:
+        data = doc.to_dict()
+        return True
+    return False
+
+def check_password(username,password):
+    users_ref = db.collection("users")
+    query = users_ref.where(u'username', u'==', username)
+    docs = query.stream()
+    for doc in docs:
+        data = doc.to_dict()
+        if check_password_hash(data["password"],password):
+            return True
+    return False

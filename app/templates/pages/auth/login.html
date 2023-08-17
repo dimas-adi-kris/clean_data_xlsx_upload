@@ -1,3 +1,5 @@
+{% extends "includes/authTemplates.html" %} {% block title %}Main App{% endblock
+%} {% block main %}
 <body class="bg-gradient-primary vh-100 vw-100 pt-5">
   <div class="pt-5">
     <div class="pt-5">
@@ -7,6 +9,25 @@
             <div class="col-lg-6">
               <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-5">
+                  {% if status %}
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div
+                        class="alert alert-{{status}} alert-dismissible fade show"
+                      >
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="alert"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{message}}
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
                   <div class="row">
                     <form
                       class="user col-lg"
@@ -79,3 +100,4 @@
     </div>
   </div>
 </body>
+{% endblock %}

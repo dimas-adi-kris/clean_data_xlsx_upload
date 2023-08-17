@@ -1,8 +1,11 @@
 
-from flask import render_template, request, Blueprint
+from flask import render_template, request, Blueprint, session,redirect
 # from app.models.user import User
-from app.models.add_data import add_new_data
+import app.models.UserModel as User
+
+from app.middleware.Authentication import authentication
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 home = Blueprint('home', __name__)
 
@@ -12,24 +15,43 @@ auth = Blueprint('auth', __name__)
 @home.route("/", methods=["GET", "POST"])
 @home.route('/index', methods=["GET", "POST"])
 def index():
-	return render_template("pages/home/index.html")
-
-@home.route('/add_data', methods=["GET", "POST"])
-def add_data():
-    add_new_data()
-    return render_template("pages/home/index.html")
-
+    if authentication():
+        return render_template("pages/home/index.html")
+    else:
+        return render_template("pages/auth/login.html")
 
 @auth.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("pages/auth/login.html")
     else:
-        email = request.form.get("email")
+        username = request.form.get("login")
+        password = request.form.get("password")
+        print(username,password)
+        if User.check_password(username,password):
+            session["username"] = username
+            return redirect("/")
+        else:
+            return render_template("pages/auth/login.html",message="Login failed",status="danger")
+
+
 
 @auth.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "GET":
         return render_template("pages/auth/register.html")
     else:
-        email = request.form.get("email")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if User.check_username(username):
+            return render_template("pages/auth/register.html",message="Username already exists",status="danger")
+        else:
+            User.add_user(username,password)
+            session["username"] = username
+            return render_template("pages/auth/login.html",message="Register success",status="success")
+        
+
+@auth.route('/logout', methods=["GET", "POST"])
+def logout():
+    session.clear()
+    return redirect("/")
