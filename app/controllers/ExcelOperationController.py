@@ -46,12 +46,6 @@ def result():
                 col_change[col] = ' '.join(camel_case_split(col))
                 col_change[col] = ' '.join(remove_special_characters(col_change[col]).split())
         df_old = df_old.rename(columns=col_change)
-        # kolomReq = [
-        #     'NPWP','Status Kawin','Suami Istri','Kode Pos','Status Pekerjaan','Kebangsaan'
-        #     ]
-        # for col in kolomReq:
-        #     if col not in df_old.columns:
-        #         return render_template("public/index.html",feedback="Tidak ada kolom "+col,status='danger') 
         df = df_old.copy()
 
         column_checked = []
@@ -162,13 +156,8 @@ def result():
 
                 empty_row_counts = {col: len(df[df[col] == '']) for col in column_checked}
                 df.columns = old_col
-                with open(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.json'), 'w+') as f:
+                with open(os.path.join(app.config["EXCEL_UPLOADS"]+'/revisi/', filename_to_save+'.json'), 'w+') as f:
                     json.dump(empty_row_counts, f, indent=4)
-
-            
-
-
-
 
 
             # df.to_excel(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xlsx'), index=False)
@@ -201,26 +190,6 @@ def result():
 @excel.route('/daftar-excel/')
 @excel.route('/daftar-excel/<status>')
 def daftar_excel(status=None):
-    # daftar_file = glob.glob(app.config["EXCEL_UPLOADS"]+'/*')
-
-    # daftar_nama_file_pre = []
-
-    # for i in daftar_file:
-    #     hasil  = i.split('.')[1].split('\\')[-1]
-    #     if not hasil.endswith("-ori"):
-    #         daftar_nama_file_pre.append(hasil)
-    # daftar_nama_file_pre = np.unique(daftar_nama_file_pre)
-    # daftar_nama_file = []
-    # if status == "Semua":
-    #     daftar_nama_file = daftar_nama_file_pre
-    # elif status:
-    #     for nama_file in daftar_nama_file_pre:
-    #         if nama_file.endswith(status):
-    #             daftar_nama_file.append(nama_file)
-    # else:
-    #     daftar_nama_file = daftar_nama_file_pre
-
-    # daftar_nama_file = np.unique(daftar_nama_file)
     paths = glob.glob(app.config["EXCEL_UPLOADS"]+'/*/*.xls')
     path_dict = {}
     if (status == "Semua") or (status == None) or (status == ''):        
@@ -266,9 +235,11 @@ def daftar_excel(status=None):
 
 @excel.route('/daftar-excel/detail-kolom/<filename>')
 def detail_kolom(filename):
-    
+    with open(os.path.join(app.config["EXCEL_UPLOADS"]+'/revisi/'+filename+'-full.json'), 'r') as f:
+        empty_row_counts = json.load(f)
     return render_template(
         "pages/daftar_file/detail_kolom.html",
-        # df=df,
+        empty_row_counts=empty_row_counts,
+        data_key=list(empty_row_counts.keys()),
         filename=filename
         )

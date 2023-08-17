@@ -7,19 +7,59 @@
     </tr>
   </thead>
   <tbody>
-    {%for i in range(0, daftar_nama_file|length)%}
+    {%for nama_file in daftar_nama_file%}
     <tr>
-      <td>{{i+1}}</td>
-      <td>{{daftar_nama_file[i]}}</td>
+      <td>{{loop.index}}</td>
+      <td>{{nama_file}}</td>
       <td>
+        {% if path_dict[nama_file] == 'fix' %}
         <a
-          class="btn btn-primary"
-          href="{{url_for('static', filename='uploads/'+daftar_nama_file[i]+'.xls')}}"
+          class="btn btn-primary btn-sm m-1"
+          href="{{url_for('static', filename='uploads/fix/'+nama_file+'.xls')}}"
           data-toggle="tooltip"
           data-placement="top"
           title="Download Xls"
-          >Xls</a
+          >Download</a
         >
+
+        {% elif path_dict[nama_file] == 'revisi' %}
+
+        <a
+          class="btn btn-primary btn-sm m-1"
+          href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-full.xls')}}"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="Semua data termasuk valid dan non valid"
+          >Download Full</a
+        >
+        <a
+          class="btn btn-primary btn-sm m-1"
+          href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-not-valid-revisi.xls')}}"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="Data non valid"
+          >Not Valid</a
+        >
+        <a
+          class="btn btn-primary btn-sm m-1"
+          href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-valid-revisi.xls')}}"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="Data valid"
+          >Valid</a
+        >
+        <span data-toggle="tooltip" data-placement="top" title="Detail Kolom">
+          <button
+            type="button"
+            class="btn btn-primary btn-sm m-1 btn-detail-kolom"
+            data-toggle="modal"
+            data-target="#detailKolom"
+            data-nama-file="{{nama_file}}"
+          >
+            Detail Kolom
+          </button>
+        </span>
+        {% else %} {% endif %}
       </td>
     </tr>
     {%endfor%}
