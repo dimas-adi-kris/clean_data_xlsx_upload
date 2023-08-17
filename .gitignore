@@ -10,3 +10,4 @@ flaskpy2/*
 jupyter/*
 *.pyc
 __pycache__/config.cpython-311.pyc
+app/static/uploads/*

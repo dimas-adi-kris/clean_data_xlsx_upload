@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="container mb-5">
-      <div class="table-responsive">
+      <div class="table-responsive" id="tabel-daftar-nama-file">
         <table
           class="table table-bordered"
           id="DataTable"
@@ -84,28 +84,42 @@
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
     $('[name="filter-file"]').on("change", function () {
+      console.log("first");
       var filter = $(this).val();
       table.destroy();
       $("#DataTable").remove();
       const a = $("#tabel-daftar-nama-file");
       let url = "{{ url_for('excel.daftar_excel') }}" + filter;
-      fetch(url)
-        .then((response) => response.text())
-        .then((data) => {
-          $("#tabel-daftar-nama-file").html(data);
+      $("#tabel-daftar-nama-file").load(url, function () {
+        console.log("second");
+        table = $("#DataTable").DataTable({
+          paging: false,
+          ordering: false,
+          info: false,
+          searching: false,
+          fixedColumns: {
+            left: 1,
+          },
+        });
+      });
+      // fetch(url)
+      //   .then((response) => console.log(response.text()))
+      //   .then((data) => {
+      //     console.log(data);
+      //     $("#tabel-daftar-nama-file").html(data);
 
-          // Inisialisasi tabel menggunakan DataTable setelah data dimuat
-          table = $("#DataTable").DataTable({
-            paging: false,
-            ordering: false,
-            info: false,
-            searching: false,
-            fixedColumns: {
-              left: 1,
-            },
-          });
-        })
-        .catch((error) => console.error("Error:", error));
+      //     // Inisialisasi tabel menggunakan DataTable setelah data dimuat
+      //     table = $("#DataTable").DataTable({
+      //       paging: false,
+      //       ordering: false,
+      //       info: false,
+      //       searching: false,
+      //       fixedColumns: {
+      //         left: 1,
+      //       },
+      //     });
+      //   })
+      //   .catch((error) => console.error("Error:", error));
     });
   });
 </script>

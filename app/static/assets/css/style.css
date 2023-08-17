@@ -88,6 +88,9 @@ input[type="file"] {
 .table {
   background-color: white;
 }
+.table-result {
+  background-color: white;
+}
 
 .beda {
   background-color: pink;

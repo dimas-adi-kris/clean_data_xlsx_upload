@@ -1,0 +1,27 @@
+<table class="table table-bordered" id="DataTable" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>No.</th>
+      <th>Nama File</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for i in range(0, daftar_nama_file|length)%}
+    <tr>
+      <td>{{i+1}}</td>
+      <td>{{daftar_nama_file[i]}}</td>
+      <td>
+        <a
+          class="btn btn-primary"
+          href="{{url_for('static', filename='uploads/'+daftar_nama_file[i]+'.xls')}}"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="Download Xls"
+          >Xls</a
+        >
+      </td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>

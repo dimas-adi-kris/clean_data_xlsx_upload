@@ -109,7 +109,7 @@ def kota(y, kode_):
             if len(res_prop) == 1:
                 return res_prop.iloc[0,0]
             
-    return ''
+    return 'NULL'
 
 def suami_istri(row):
     if row['Status Kawin'] == 'K: KAWIN':
@@ -117,7 +117,7 @@ def suami_istri(row):
     elif row['Status Kawin'] in ['B: BELUM KAWIN','D: CERAI']:
         return 'NULL'
     else:
-        return ''
+        return 'FALSE'
 
 def NIKconfirm(x):
     if len(x)!=16:
