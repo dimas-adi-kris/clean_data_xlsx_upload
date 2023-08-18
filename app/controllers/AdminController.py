@@ -3,13 +3,14 @@ from flask import render_template, request, Blueprint, session,redirect,jsonify
 # from app.models.user import User
 import app.models.UserModel as User
 
-from app.middleware.Authentication import authentication
+from app.middleware.Authentication import authentication, role_required
 
 
 admin = Blueprint('admin', __name__)
 
 
 @admin.route("/users", methods=["GET", "POST"])
+@role_required(required_role="admin")
 def users():
     if session.get("username") == "admin":
         users = User.get_all_data()
@@ -18,6 +19,7 @@ def users():
         return render_template("pages/auth/login.html")
     
 @admin.route("/users/store", methods=["GET", "POST"])
+@role_required(required_role="admin")
 def store():
     if session.get("username") == "admin":
         if request.method == "POST":
@@ -30,29 +32,23 @@ def store():
         return redirect("/login")
     
 @admin.route("/users/update/<id>", methods=["GET", "POST"])
+@role_required(required_role="admin")
 def update(id):
-    if session.get("username") == "admin":
-        if request.method == "POST":
-            username = request.form["username"]
-            password = request.form["password"]
-            role = request.form["role"]
-            User.update_data(id,username,password,role)
-            return redirect("/users")
-    else:
-        return redirect("/login")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        role = request.form["role"]
+        User.update_data(id,username,password,role)
+        return redirect("/users")
     
 @admin.route("/users/delete/<id>", methods=["GET", "POST"])
+@role_required(required_role="admin")
 def delete(id):
-    if session.get("username") == "admin":
-        User.delete_data(id)
-        return redirect("/users")
-    else:
-        return redirect("/login")
+    User.delete_data(id)
+    return redirect("/users")
 
 @admin.route("/users/show/<id>", methods=["GET", "POST"])
+@role_required(required_role="admin")
 def show(id):
-    if session.get("username") == "admin":
-        user = User.get_data_by_id(id)
-        return jsonify(user)
-    else:
-        return redirect("/login")
+    user = User.get_data_by_id(id)
+    return jsonify(user)

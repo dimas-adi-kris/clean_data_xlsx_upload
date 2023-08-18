@@ -69,5 +69,8 @@ def check_password(username,password):
     for doc in docs:
         data = doc.to_dict()
         if check_password_hash(data["password"],password):
-            return True
+            data["id"] = doc.id
+            print(data)
+            del data["password"]
+            return data
     return False

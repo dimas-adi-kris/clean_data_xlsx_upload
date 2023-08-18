@@ -28,8 +28,10 @@ def login():
         username = request.form.get("login")
         password = request.form.get("password")
         print(username,password)
-        if User.check_password(username,password):
-            session["username"] = username
+        autentikasi = User.check_password(username,password)
+        if autentikasi:
+            session["username"] = autentikasi['username']
+            session["role"] = autentikasi['role']
             return redirect("/")
         else:
             return render_template("pages/auth/login.html",message="Login failed",status="danger")
