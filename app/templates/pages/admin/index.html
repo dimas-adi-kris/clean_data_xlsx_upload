@@ -1,6 +1,7 @@
 {% extends "includes/templates.html" %} {% block title %}Main App{% endblock %}
 {% block main %}
 <div class="container">
+  {% include 'includes/error.html' %}
   <div class="row text-center justify-content-center">
     <div class="row" style="display: inline; width: 100%">
       <h2>Daftar User</h2>
@@ -57,18 +58,18 @@
                   </div>
                 </span>
 
-                <!-- <button
+                <button
                   type="button"
                   data-id="{{user.id}}"
-                  class="btn btn-danger btn-sm"
-                  data-remote=""
+                  class="btn btn-danger btn-sm btn-delete"
+                  data-remote="{{ url_for('admin.delete',id=user.id ) }}"
                   data-toggle="modal"
                   data-target="#deleteModal"
                   data-title="Delete User"
                   title="Delete User"
                 >
                   <i class="far fa-trash-alt"></i>
-                </button> -->
+                </button>
               </td>
             </tr>
             {%endfor%}
@@ -79,8 +80,8 @@
   </div>
 </div>
 
-{% include 'pages/admin/modalAdd.html' %} {% endblock %} {% block after_script
-%}
+{% include 'pages/admin/modalAdd.html' %} {% include
+'pages/admin/modalDelete.html' %} {% endblock %} {% block after_script %}
 <script>
   $(document).ready(function () {
     $("#DataTable").DataTable({
@@ -89,12 +90,17 @@
       info: false,
       searching: false,
     });
-    $(".btn-add").on("click", function () {
+    function resetuserForm() {
       $('[name="id"]').val("");
       $('[name="username"]').val("");
+      $('[name="password"]').val("");
       $('[name="role"]').val("").change();
+    }
+    $(".btn-add").on("click", function () {
+      resetuserForm();
     });
     $(".btn-edit").on("click", function () {
+      resetuserForm();
       var id = $(this).data("id");
       $.ajax({
         url: " {{ url_for('admin.show',id=':id' ) }}".replace(":id", id),
@@ -105,6 +111,15 @@
           $('[name="role"]').val(data.role).change();
         },
       });
+    });
+
+    $(".btn-delete").on("click", function () {
+      var id = $(this).data("id");
+      var url = $(this).data("remote");
+      var title = $(this).data("title");
+      $("#id_user").val(id);
+      $("#deleteModal").find(".modal-title").text(title);
+      $("#deleteModal").find("form").attr("action", url);
     });
   });
 </script>

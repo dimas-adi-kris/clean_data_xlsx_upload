@@ -1,7 +1,8 @@
 
-from flask import render_template, request, Blueprint, session,redirect,jsonify
+from flask import render_template, request, Blueprint, session,redirect,jsonify,flash
 # from app.models.user import User
 import app.models.UserModel as User
+from app.helpers import *
 
 from app.middleware.Authentication import authentication, role_required
 
@@ -20,9 +21,16 @@ def users():
 def store():
     if request.method == "POST":
         username = request.form["username"]
+        if User.check_username(username):
+            flash("Username sudah ada","danger")
+            return redirect("/users")
+        if is_valid_username(username) == False:
+            flash("Username hanya boleh berisi huruf (baik besar maupun kecil), angka, dan underscore. Panjang username minimal 3 karakter dan maksimal 20 karakter","danger")
+            return redirect("/users")
         password = request.form["password"]
         role = request.form["role"]
         User.add_user(username,password,role)
+        flash("User berhasil ditambah","success")
         return redirect("/users")
     
 @admin.route("/users/update/<id>", methods=["GET", "POST"])
@@ -39,6 +47,7 @@ def update(id):
 @role_required(required_role="admin")
 def delete(id):
     User.delete_data(id)
+    flash("User berhasil dihapus","success")
     return redirect("/users")
 
 @admin.route("/users/show/<id>", methods=["GET", "POST"])

@@ -3,6 +3,15 @@ import re,json
 import pandas as pd
 import datetime
 
+
+def is_valid_username(username):
+    # Username hanya boleh berisi huruf (baik besar maupun kecil), angka, dan underscore
+    # Panjang username minimal 3 karakter dan maksimal 20 karakter
+    pattern = r"^[a-zA-Z0-9_]{3,20}$"
+    return re.match(pattern, username) is not None
+
+
+
 with open("./Kode Dati.json",'r') as f:
     kode_dati = pd.DataFrame(json.loads(f.read()))
 
