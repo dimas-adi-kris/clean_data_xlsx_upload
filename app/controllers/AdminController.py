@@ -1,6 +1,4 @@
-
 from flask import render_template, request, Blueprint, session,redirect,jsonify,flash
-# from app.models.user import User
 import app.models.UserModel as User
 from app.helpers import *
 

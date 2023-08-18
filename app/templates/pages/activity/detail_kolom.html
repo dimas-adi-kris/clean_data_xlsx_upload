@@ -1,0 +1,19 @@
+<table class="table table-bordered" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>No.</th>
+      <th>Kolom</th>
+      <th>Total data kosong</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for row in data_key %}
+    <tr>
+      <td>{{loop.index}}</td>
+      <td>{{row}}</td>
+      <td>{{empty_row_counts[row]}}</td>
+      <td></td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
