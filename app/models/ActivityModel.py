@@ -16,22 +16,22 @@ def get_data_by_id(id):
     data["id"] = id
     return data
 
-def add_activity(name,description):
+def add_activity(username,description):
     id = str(OrderedUUID())
     doc_ref = db.collection("activities").document(id)
-    doc_ref.set({"name": name, "description": description})
+    doc_ref.set({"username": username, "description": description})
     return {
         "id":id,
-        "name":name,
+        "username":username,
         "description":description
     }
 
 def update_data(id,name,description):
     doc_ref = db.collection("activities").document(id)
-    doc_ref.set({"name": name, "description": description})
+    doc_ref.set({"username": name, "description": description})
     return {
         "id":id,
-        "name":name,
+        "username":name,
         "description":description
     }
 

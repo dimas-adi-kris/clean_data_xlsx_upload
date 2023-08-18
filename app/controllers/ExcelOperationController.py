@@ -11,6 +11,7 @@ from flask import render_template, request, redirect, jsonify, make_response, se
 import datetime
 from werkzeug.utils import secure_filename
 from app.helpers import *
+import app.models.ActivityModel as Activity
 
 excel = Blueprint('excel', __name__)
 
@@ -163,7 +164,7 @@ def result():
             # df.to_excel(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xlsx'), index=False)
             # to_xls(df,os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xls'))
             # df.to_csv(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.csv'), index=False)
-
+            Activity.add_activity(session['username'], f'Username {session["username"]} mengunggah file {filename}')
             return render_template(
                 "pages/result/index.html",
                 feedback="",

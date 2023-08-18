@@ -6,30 +6,12 @@
   {% include 'includes/error.html' %}
   <div class="row text-center justify-content-center">
     <div class="row" style="display: inline; width: 100%">
-      <h2>Excel data cleaner</h2>
+      <h2>Aktifitas</h2>
     </div>
-    <h4>
-      Perbaiki data excel dari format format. Upload satu file excel dan temukan
-      perbedaannya
-    </h4>
+    <h4>Daftar aktifitas yang terjadi di aplikasi</h4>
   </div>
   <div class="row outer-box border text-center" id="daftar-excel">
-    <div class="container m-2 p-0">
-      <div class="col-2">
-        <div class="row form-group">
-          <select
-            name="filter-file"
-            class="form-control"
-            id="exampleFormControlSelect1"
-          >
-            <option value="Semua" selected>Semua</option>
-            <option value="fix">Fix</option>
-            <option value="revisi">Perlu revisi</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="container mb-5">
+    <div class="container my-5">
       <div class="table-responsive" id="tabel-daftar-nama-file">
         <table
           class="table table-bordered"
@@ -40,68 +22,30 @@
           <thead>
             <tr>
               <th>No.</th>
-              <th>Nama File</th>
+              <th>Username</th>
+              <th>Description</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {%for nama_file in daftar_nama_file%}
+            {%for activity in activities%}
             <tr>
               <td>{{loop.index}}</td>
-              <td>{{nama_file}}</td>
+              <td>{{activity.username}}</td>
+              <td>{{activity.description}}</td>
               <td>
-                {% if path_dict[nama_file] == 'fix' %}
-                <a
-                  class="btn btn-primary btn-sm m-1"
-                  href="{{url_for('static', filename='uploads/fix/'+nama_file+'.xls')}}"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Download Xls"
-                  >Download</a
+                <button
+                  type="button"
+                  data-id="{{activity.id}}"
+                  class="btn btn-danger btn-sm btn-delete"
+                  data-remote="{{ url_for('activity.delete',id=activity.id ) }}"
+                  data-toggle="modal"
+                  data-target="#deleteModal"
+                  data-title="Delete User"
+                  title="Delete User"
                 >
-
-                {% elif path_dict[nama_file] == 'revisi' %}
-
-                <a
-                  class="btn btn-primary btn-sm m-1"
-                  href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-full.xls')}}"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Semua data termasuk valid dan non valid"
-                  >Download Full</a
-                >
-                <a
-                  class="btn btn-primary btn-sm m-1"
-                  href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-not-valid-revisi.xls')}}"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Data non valid"
-                  >Not Valid</a
-                >
-                <a
-                  class="btn btn-primary btn-sm m-1"
-                  href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-valid-revisi.xls')}}"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Data valid"
-                  >Valid</a
-                >
-                <span
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Detail Kolom"
-                >
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm m-1 btn-detail-kolom"
-                    data-toggle="modal"
-                    data-target="#detailKolom"
-                    data-nama-file="{{nama_file}}"
-                  >
-                    Detail Kolom
-                  </button>
-                </span>
-                {% else %} {% endif %}
+                  <i class="far fa-trash-alt"></i>
+                </button>
               </td>
             </tr>
             {%endfor%}
@@ -113,46 +57,8 @@
 </div>
 
 <!-- Modal -->
-<div
-  class="modal fade"
-  id="detailKolom"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="detailKolomLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="detailKolomLabel">Detail Kolom</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="text-center">
-          <p>
-            Berikut adalah daftar kolom yang telah diperiksa beserta jumlah
-            baris yang kosong
-          </p>
-          <div id="content-detail-kolom"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-{% endblock %} {% block script %}
+{% include 'pages/activity/modalDelete.html' %} {% endblock %} {% block script
+%}
 <script>
   var table = $("#DataTable").DataTable({
     paging: false,
@@ -165,36 +71,14 @@
   });
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
-    $('[name="filter-file"]').on("change", function () {
-      console.log("first");
-      var filter = $(this).val();
-      table.destroy();
-      $("#DataTable").remove();
-      const a = $("#tabel-daftar-nama-file");
-      let url = "{{ url_for('excel.daftar_excel') }}" + filter;
-      $("#tabel-daftar-nama-file").load(url, function () {
-        console.log("second");
-        table = $("#DataTable").DataTable({
-          paging: false,
-          ordering: false,
-          info: false,
-          searching: false,
-          fixedColumns: {
-            left: 1,
-          },
-        });
-      });
-    });
-    $(".btn-detail-kolom").on("click", function () {
-      var nama_file = $(this).data("nama-file");
-      nama_file = encodeURI(nama_file);
-      console.log(nama_file);
-      let url =
-        "{{ url_for('excel.detail_kolom',filename=':filename') }}".replace(
-          ":filename",
-          nama_file
-        );
-      $("#content-detail-kolom").load(url);
+
+    $(".btn-delete").on("click", function () {
+      var id = $(this).data("id");
+      var url = $(this).data("remote");
+      var title = $(this).data("title");
+      $("#id_user").val(id);
+      $("#deleteModal").find(".modal-title").text(title);
+      $("#deleteModal").find("form").attr("action", url);
     });
   });
 </script>
