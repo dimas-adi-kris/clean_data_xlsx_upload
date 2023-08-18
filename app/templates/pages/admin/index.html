@@ -1,0 +1,111 @@
+{% extends "includes/templates.html" %} {% block title %}Main App{% endblock %}
+{% block main %}
+<div class="container">
+  <div class="row text-center justify-content-center">
+    <div class="row" style="display: inline; width: 100%">
+      <h2>Daftar User</h2>
+    </div>
+    <h4>Daftar user yang terdaftar di aplikasi</h4>
+  </div>
+  <div class="row outer-box border text-center" id="daftar-excel">
+    <div class="container pt-5 pr-5">
+      <button
+        type="button"
+        class="btn btn-primary btn-icon-split btn-add float-right"
+        data-toggle="modal"
+        data-target="#staticBackdrop"
+      >
+        <span class="icon text-white-50">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Tambah User</span>
+      </button>
+    </div>
+    <div class="container my-5">
+      <div class="table-responsive" id="tabel-daftar-nama-file">
+        <table
+          class="table table-bordered"
+          id="DataTable"
+          width="100%"
+          cellspacing="0"
+        >
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Username</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%for user in users%}
+            <tr>
+              <td>{{loop.index}}</td>
+              <td>{{user.username}}</td>
+              <td class="text-center" width="160px">
+                <span
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Update User"
+                >
+                  <div
+                    data-id="{{user.id}}"
+                    class="btn btn-primary btn-sm btn-edit"
+                    data-toggle="modal"
+                    data-target="#staticBackdrop"
+                  >
+                    <i class="far fa-edit"></i>
+                  </div>
+                </span>
+
+                <!-- <button
+                  type="button"
+                  data-id="{{user.id}}"
+                  class="btn btn-danger btn-sm"
+                  data-remote=""
+                  data-toggle="modal"
+                  data-target="#deleteModal"
+                  data-title="Delete User"
+                  title="Delete User"
+                >
+                  <i class="far fa-trash-alt"></i>
+                </button> -->
+              </td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'pages/admin/modalAdd.html' %} {% endblock %} {% block after_script
+%}
+<script>
+  $(document).ready(function () {
+    $("#DataTable").DataTable({
+      paging: false,
+      ordering: false,
+      info: false,
+      searching: false,
+    });
+    $(".btn-add").on("click", function () {
+      $('[name="id"]').val("");
+      $('[name="username"]').val("");
+      $('[name="role"]').val("").change();
+    });
+    $(".btn-edit").on("click", function () {
+      var id = $(this).data("id");
+      $.ajax({
+        url: " {{ url_for('admin.show',id=':id' ) }}".replace(":id", id),
+        method: "GET",
+        success: function (data) {
+          $('[name="id"]').val(data.id);
+          $('[name="username"]').val(data.username);
+          $('[name="role"]').val(data.role).change();
+        },
+      });
+    });
+  });
+</script>
+{% endblock %}

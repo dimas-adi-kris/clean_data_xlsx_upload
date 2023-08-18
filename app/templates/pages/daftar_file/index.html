@@ -152,52 +152,52 @@
       </div>
     </div>
   </div>
+</div>
 
-  {% endblock %} {% block script %}
-  <script>
-    var table = $("#DataTable").DataTable({
-      paging: false,
-      ordering: false,
-      info: false,
-      searching: false,
-      fixedColumns: {
-        left: 1,
-      },
-    });
-    $(function () {
-      $('[data-toggle="tooltip"]').tooltip();
-      $('[name="filter-file"]').on("change", function () {
-        console.log("first");
-        var filter = $(this).val();
-        table.destroy();
-        $("#DataTable").remove();
-        const a = $("#tabel-daftar-nama-file");
-        let url = "{{ url_for('excel.daftar_excel') }}" + filter;
-        $("#tabel-daftar-nama-file").load(url, function () {
-          console.log("second");
-          table = $("#DataTable").DataTable({
-            paging: false,
-            ordering: false,
-            info: false,
-            searching: false,
-            fixedColumns: {
-              left: 1,
-            },
-          });
+{% endblock %} {% block script %}
+<script>
+  var table = $("#DataTable").DataTable({
+    paging: false,
+    ordering: false,
+    info: false,
+    searching: false,
+    fixedColumns: {
+      left: 1,
+    },
+  });
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $('[name="filter-file"]').on("change", function () {
+      console.log("first");
+      var filter = $(this).val();
+      table.destroy();
+      $("#DataTable").remove();
+      const a = $("#tabel-daftar-nama-file");
+      let url = "{{ url_for('excel.daftar_excel') }}" + filter;
+      $("#tabel-daftar-nama-file").load(url, function () {
+        console.log("second");
+        table = $("#DataTable").DataTable({
+          paging: false,
+          ordering: false,
+          info: false,
+          searching: false,
+          fixedColumns: {
+            left: 1,
+          },
         });
       });
-      $(".btn-detail-kolom").on("click", function () {
-        var nama_file = $(this).data("nama-file");
-        nama_file = encodeURI(nama_file);
-        console.log(nama_file);
-        let url =
-          "{{ url_for('excel.detail_kolom',filename=':filename') }}".replace(
-            ":filename",
-            nama_file
-          );
-        $("#content-detail-kolom").load(url);
-      });
     });
-  </script>
-  {% endblock %}
-</div>
+    $(".btn-detail-kolom").on("click", function () {
+      var nama_file = $(this).data("nama-file");
+      nama_file = encodeURI(nama_file);
+      console.log(nama_file);
+      let url =
+        "{{ url_for('excel.detail_kolom',filename=':filename') }}".replace(
+          ":filename",
+          nama_file
+        );
+      $("#content-detail-kolom").load(url);
+    });
+  });
+</script>
+{% endblock %}

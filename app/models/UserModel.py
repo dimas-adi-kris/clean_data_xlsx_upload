@@ -8,21 +8,22 @@ def get_data_by_id(id):
     del data["password"]
     return data
 
-def add_user(username,password):
+def add_user(username,password,role):
     id = str(OrderedUUID())
     doc_ref = db.collection("users").document(id)
-    doc_ref.set({"username": username, "password": generate_password_hash(password)})
+    doc_ref.set({"username": username, "password": generate_password_hash(password), "role": role})
     return {
         "id":id,
         "username":username,
     }
 
-def update_data(id,username,password):
+def update_data(id,username,password,role):
     doc_ref = db.collection("users").document(id)
-    doc_ref.set({"username": username, "password": generate_password_hash(password)})
+    doc_ref.set({"username": username, "password": generate_password_hash(password),role:role})
     return {
         "id":id,
         "username":username,
+        "role":role
     }
 
 def delete_data(id):
