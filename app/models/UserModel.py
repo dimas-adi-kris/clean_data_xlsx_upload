@@ -2,6 +2,17 @@ from app.db.firestore import db
 from ordereduuid import OrderedUUID
 from werkzeug.security import generate_password_hash, check_password_hash
 
+def get_all_data():
+    users_ref = db.collection("users")
+    docs = users_ref.stream()
+    list_users = []
+    for doc in docs:
+        data = doc.to_dict()
+        data["id"] = doc.id
+        del data["password"]
+        list_users.append(data)
+    return list_users
+
 def get_data_by_id(id):
     data = db.collection("users").document(id).get().to_dict()
     data["id"] = id
@@ -30,16 +41,6 @@ def delete_data(id):
     db.collection("users").document(id).delete()
     return True
 
-def get_all_data():
-    users_ref = db.collection("users")
-    docs = users_ref.stream()
-    list_users = []
-    for doc in docs:
-        data = doc.to_dict()
-        data["id"] = doc.id
-        del data["password"]
-        list_users.append(data)
-    return list_users
 
 def get_data_by_username(username):
     users_ref = db.collection("users")
