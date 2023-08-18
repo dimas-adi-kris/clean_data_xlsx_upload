@@ -30,6 +30,7 @@ def login():
         print(username,password)
         autentikasi = User.check_password(username,password)
         if autentikasi:
+            print(autentikasi)
             session["username"] = autentikasi['username']
             session["role"] = autentikasi['role']
             return redirect("/")

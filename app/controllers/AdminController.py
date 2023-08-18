@@ -12,24 +12,18 @@ admin = Blueprint('admin', __name__)
 @admin.route("/users", methods=["GET", "POST"])
 @role_required(required_role="admin")
 def users():
-    if session.get("username") == "admin":
-        users = User.get_all_data()
-        return render_template("pages/admin/index.html",users=users)
-    else:
-        return render_template("pages/auth/login.html")
+    users = User.get_all_data()
+    return render_template("pages/admin/index.html",users=users)
     
 @admin.route("/users/store", methods=["GET", "POST"])
 @role_required(required_role="admin")
 def store():
-    if session.get("username") == "admin":
-        if request.method == "POST":
-            username = request.form["username"]
-            password = request.form["password"]
-            role = request.form["role"]
-            User.add_user(username,password,role)
-            return redirect("/users")
-    else:
-        return redirect("/login")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        role = request.form["role"]
+        User.add_user(username,password,role)
+        return redirect("/users")
     
 @admin.route("/users/update/<id>", methods=["GET", "POST"])
 @role_required(required_role="admin")
