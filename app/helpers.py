@@ -20,6 +20,9 @@ wilayah = kode_dati['Kode Dati II'].str.split(':').str[1].str.strip().str.split(
 kode_dati['Propinsi'] = wilayah.str[0].str.strip().str.upper()
 kode_dati['Kota Kab'] = wilayah.str[1].str.strip().str.upper()
 
+df_kode_pos = pd.read_excel('Data_Master_Wilayah.xlsx',dtype=str,na_filter=False)
+df_kode_pos = df_kode_pos[df_kode_pos['Kode_pos'] != '']
+
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
@@ -50,12 +53,24 @@ def to_xls(df,filename):
     workbook.save(filename)
 
 def kodePosConfirm(x):
-    if len(x) != 5:
-        return ""
-    elif x[-3:] == '000':
-        return ""
+    df_ = df_kode_pos[
+        (df_kode_pos['Provinsi'].str.contains(x['Propinsi'])) 
+    & (df_kode_pos['Kota'].str.contains(x['Kota'])) 
+    & (df_kode_pos['Kecamatan'].str.contains(x['Kecamatan'])) 
+    & (df_kode_pos['Kelurahan'].str.contains(x['Kelurahan']))
+    ].reset_index(drop=True)
+    if len(df_) == 0:
+        return ''
+    elif len(df_) == 1:
+        return df_['Kode_pos'][0]
     else:
-        return x
+        return ''
+    # if len(x) != 5:
+    #     return ""
+    # elif x[-3:] == '000':
+    #     return ""
+    # else:
+    #     return x
 
 def npwpFormat(x):
     x = onlyNumbersOnStr(x)

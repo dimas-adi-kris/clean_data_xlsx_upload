@@ -54,11 +54,18 @@
         </a>
 
         <div class="dropdown-divider"></div>
-        {% endif %}
+        {% endif %} {% if session.username %}
         <a class="dropdown-item" href="/logout">
           <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
           Logout
         </a>
+        {% else %}
+        <a class="dropdown-item" href="/login">
+          <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+          Login
+        </a>
+
+        {% endif %}
       </div>
     </li>
   </ul>
