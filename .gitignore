@@ -1,4 +1,6 @@
 
+./config.py
+config.py
 __pycache__\*
 app\__pycache__\*
 *.xls
@@ -11,4 +13,3 @@ jupyter/*
 *.pyc
 __pycache__/config.cpython-311.pyc
 app/static/uploads/*
-config.py

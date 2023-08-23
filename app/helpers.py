@@ -321,7 +321,7 @@ def to_datetime(x):
 
 
 def no_double_space(x):
-    return re.sub(" +", " ", x)
+    return re.sub(" +", " ", x.strip())
 
 
 def max_char(x, max_char):
