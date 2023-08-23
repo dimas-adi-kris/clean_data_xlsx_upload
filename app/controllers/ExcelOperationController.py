@@ -20,6 +20,7 @@ from flask import (
     url_for,
     session,
     Blueprint,
+    flash,
 )
 import datetime
 from werkzeug.utils import secure_filename
@@ -94,8 +95,10 @@ def result():
             df["Nama"] = df["Nama"].apply(max_char, max_char=40)
             column_checked.append("Nama")
 
-            df["Jen. Kelamin"] = df["Jen. Kelamin"].apply(gender)
-            column_checked.append("Jen. Kelamin")
+            column_names = find_col(df.columns, "kelamin")
+            for column_name in column_names:
+                df[column_name] = df[column_name].apply(gender)
+                column_checked.append(column_name)
 
             df["Kebangsaan"] = df["Kebangsaan"].apply(update_nationality)
             column_checked.append("Kebangsaan")
@@ -228,7 +231,7 @@ def result():
             df["Alamat Instansi"] = df["Alamat Instansi"].apply(no_double_space)
             df["Alamat Instansi"] = df["Alamat Instansi"].apply(max_char, max_char=40)
 
-            # Kode pos yang kanan impossible to clear
+            # Kode pos sudah di clear di atas
 
             df["Suami Istri"] = df.apply(suami_istri, axis=1)
             df["Suami Istri"] = df["Suami Istri"].apply(uppercase)
@@ -367,6 +370,10 @@ def result():
             )
         except Exception as e:
             print(filename, e)
+            if session["role"] == "admin":
+                flash(f"Terjadi kesalahan, silahkan coba lagi. Error : {e}", "danger")
+            else:
+                flash("Terjadi kesalahan, silahkan coba lagi", "danger")
             return render_template(
                 "pages/home/index.html",
             )
