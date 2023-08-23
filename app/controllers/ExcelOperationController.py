@@ -186,8 +186,10 @@ def result():
                 df[column_name] = df[column_name].apply(max_char, max_char=15)
                 column_checked.append(column_name)
 
-            df["Kode Pos"] = df.apply(kodePosConfirm, axis=1)
-            column_checked.append("Kode Pos")
+            column_names = find_col(df.columns, "Pos")
+            for column_name in column_names:
+                df[column_name] = df.apply(kodePosConfirm, axis=1)
+                column_checked.append(column_name)
 
             # status rumah skipped
 
