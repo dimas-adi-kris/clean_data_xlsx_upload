@@ -148,7 +148,7 @@ def suami_istri(row):
     if row["Status Kawin"] == "K: KAWIN":
         return str(row["Suami Istri"]).upper()
     elif row["Status Kawin"] in ["B: BELUM KAWIN", "D: CERAI"]:
-        return ""
+        return "'NULL"
     else:
         return ""
 
