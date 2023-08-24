@@ -348,11 +348,12 @@ def result():
             # df.to_excel(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xlsx'), index=False)
             # to_xls(df,os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xls'))
             # df.to_csv(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.csv'), index=False)
-            if app.config["AUTHOR"] != 'Dimas':
-                Activity.add_activity(
-                    session["username"],
-                    f'Username {session["username"]} mengunggah file {filename}',
-                )
+            if app.config["AUTHOR"]:
+                if app.config["AUTHOR"] != "Dimas":
+                    Activity.add_activity(
+                        session["username"],
+                        f'Username {session["username"]} mengunggah file {filename}',
+                    )
             return render_template(
                 "pages/result/index.html",
                 feedback="",
