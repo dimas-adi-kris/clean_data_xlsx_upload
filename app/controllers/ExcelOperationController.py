@@ -266,6 +266,12 @@ def result():
             df["Kode Dati II CARGCD"] = df.apply(kota, args=[kode_dati], axis=1)
             column_checked.append("Kode Dati II CARGCD")
 
+            exception_columns = ["CIF Number", "No Rekening", "Status Rek", "Tgl Buka"]
+            # for idx, col in enumerate(column_checked):
+            for idx, col in enumerate(exception_columns):
+                if col in column_checked:
+                    del column_checked[idx]
+
             df = df.apply(lambda x: x.str.upper())
             c1 = df.where(df.values == df_old.values).notna()
 
@@ -361,10 +367,7 @@ def result():
                 column=old_col,
                 df_upload=df_old.values.tolist(),
                 df_processed=df.values.tolist(),
-                # filenameXlsx=filename_to_save+'.xlsx',
                 filenameXls=filename_to_save + ".xls",
-                # filenameCsv=filename_to_save+'.csv',
-                # filenameoriginal=fileUpload.filename,
                 filenameoriginal=filename,
                 daftar_revisi=daftar_revisi,
                 total_false=total_false,
