@@ -81,8 +81,19 @@ def npwpFormat(x):
     if len(x) != 15:
         return "HARUS 15 ANGKA"
     if x[-6:] == "000000":
-        return "6 ANGKA TERAKHIR TIDAK BOLEH 000000"
+        # return "6 ANGKA TERAKHIR TIDAK BOLEH 000000"
+        return "0" * 15
     return x
+
+
+def bi_gol_pajak(x):
+    npwp = x["NPWP"]
+    if npwp == "0" * 15:
+        return "6: Individual Tanpa NPWP"
+    elif len(npwp) == 15:
+        return "9: Individual dengan NPWP"
+    else:
+        return "6: Individual Tanpa NPWP"
 
 
 def kota(y, kode_):

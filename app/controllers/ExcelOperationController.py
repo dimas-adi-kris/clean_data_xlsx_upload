@@ -82,10 +82,6 @@ def result():
         df = df_old.copy()
 
         column_checked = []
-        column_names = find_col(df.columns, "NPWP")
-        for column_name in column_names:
-            df[column_name] = df[column_name].apply(npwpFormat)
-            column_checked.append(column_name)
         try:
             # Cleaning Column name
 
@@ -94,6 +90,14 @@ def result():
             df["Nama"] = df["Nama"].apply(no_double_space)
             df["Nama"] = df["Nama"].apply(max_char, max_char=40)
             column_checked.append("Nama")
+
+            column_names = find_col(df.columns, "NPWP")
+            for column_name in column_names:
+                df[column_name] = df[column_name].apply(npwpFormat)
+                column_checked.append(column_name)
+
+            df["BI Gol Pajak"] = df.apply(bi_gol_pajak, axis=1)
+            column_checked.append("BI Gol Pajak")
 
             column_names = find_col(df.columns, "kelamin")
             for column_name in column_names:
