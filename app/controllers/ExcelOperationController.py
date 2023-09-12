@@ -334,7 +334,8 @@ def result():
             )
 
             filename_valid = fileNoExt + "-valid-revisi"
-            df_valid = df[styled_no_change]
+            # df_valid = df[styled_no_change]
+            df_valid = df.copy()
             to_xls(
                 df_valid,
                 os.path.join(
