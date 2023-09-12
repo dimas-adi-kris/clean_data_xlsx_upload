@@ -13,8 +13,7 @@
           perbedaannya
         </h4>
       </div>
-      <div class="row outer-box border text-center">
-        
+      <div class="row outer-box border text-center">        
           <div class="m-5 w-100">
             {% if total_false==0 %}
               
@@ -24,9 +23,6 @@
             {% else %}
             <a class="btn-submit" href="{{url_for('static', filename='uploads/revisi/'+fileNoExt+'-full.xls')}}"
               >Download Full</a
-            >
-            <a class="btn-submit" href="{{url_for('static', filename='uploads/revisi/'+fileNoExt+'-not-valid-revisi.xls')}}"
-              >Download Not Valid</a
             >
             <a class="btn-submit" href="{{url_for('static', filename='uploads/revisi/'+fileNoExt+'-valid-revisi.xls')}}"
               >Download Valid</a

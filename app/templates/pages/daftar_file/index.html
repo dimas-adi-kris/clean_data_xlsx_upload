@@ -53,6 +53,7 @@
               <td>{{loop.index}}</td>
               <td>{{nama_file}}</td>
               <td>
+                <!--  -->
                 {% if path_dict[nama_file] == 'fix' %}
                 <a
                   class="btn btn-primary btn-sm m-1"
@@ -62,9 +63,11 @@
                   title="Download Xls"
                   >Download</a
                 >
+                <!--  -->
+                {% endif %}
+                <!--  -->
 
-                {% elif path_dict[nama_file] == 'revisi' %}
-
+                {% if '-full' in path_dict[nama_file] %}
                 <a
                   class="btn btn-primary btn-sm m-1"
                   href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-full.xls')}}"
@@ -73,6 +76,10 @@
                   title="Semua data termasuk valid dan non valid"
                   >Download Full</a
                 >
+                <!--  -->
+                {% endif %}
+                <!--  -->
+                {% if '-not-valid-revisi' in path_dict[nama_file] %}
                 <a
                   class="btn btn-primary btn-sm m-1"
                   href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-not-valid-revisi.xls')}}"
@@ -81,6 +88,10 @@
                   title="Data non valid"
                   >Not Valid</a
                 >
+                <!--  -->
+                {% endif %}
+                <!--  -->
+                {% if '-valid-revisi' in path_dict[nama_file] %}
                 <a
                   class="btn btn-primary btn-sm m-1"
                   href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-valid-revisi.xls')}}"
@@ -89,6 +100,9 @@
                   title="Data valid"
                   >Valid</a
                 >
+                <!--  -->
+                {% endif %}
+                <!--  -->
                 <span
                   data-toggle="tooltip"
                   data-placement="top"
@@ -104,7 +118,6 @@
                     Detail Kolom
                   </button>
                 </span>
-                {% else %} {% endif %}
               </td>
             </tr>
             {%endfor%}

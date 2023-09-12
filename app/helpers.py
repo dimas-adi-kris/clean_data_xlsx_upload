@@ -2,6 +2,7 @@ from difflib import SequenceMatcher
 import re, json
 import pandas as pd
 import datetime
+import numpy as np
 
 
 def is_valid_username(username):
@@ -35,21 +36,33 @@ def find_col(columns, key):
     return ls_found
 
 
-def to_xls(df, filename):
+def to_xls(df, filename, marked=None):
     import xlwt
 
     # Membuat objek workbook menggunakan xlwt
     workbook = xlwt.Workbook()
+    mark = xlwt.easyxf("pattern: pattern solid, fore_colour red;")
+    default = xlwt.Style.default_style
 
+    if marked is None:
+        marked = np.array([[True] * df.shape[1] for _ in range(df.shape[0])])
     # Membuat sheet di workbook
     sheet = workbook.add_sheet("Sheet1")
     # Menulis nama kolom ke sheet
     for col_idx, col_name in enumerate(df.columns):
         sheet.write(0, col_idx, col_name)
     # Menulis data DataFrame ke sheet
+    # print("row", "col", "isi", "kondisi")
     for row_idx, row_data in enumerate(df.values):
         for col_idx, cell_data in enumerate(row_data):
-            sheet.write(row_idx + 1, col_idx, cell_data)
+            # print(row_idx, col_idx, cell_data, marked[row_idx][col_idx])
+            style = mark if (not marked[row_idx][col_idx]) else default
+            sheet.write(
+                row_idx + 1,
+                col_idx,
+                cell_data,
+                style,
+            )
 
     # Menyimpan workbook ke file Excel .xls
     workbook.save(filename)

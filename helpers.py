@@ -35,11 +35,15 @@ def find_col(columns, key):
     return ls_found
 
 
-def to_xls(df, filename):
+def to_xls(df, filename, marked=None):
     import xlwt
 
     # Membuat objek workbook menggunakan xlwt
     workbook = xlwt.Workbook()
+    mark = xlwt.easyxf("pattern: pattern solid, fore_colour red;")
+
+    if marked is None:
+        marked = [[True for i in range(df.shape[1])] for j in range(df.shape[0])]
 
     # Membuat sheet di workbook
     sheet = workbook.add_sheet("Sheet1")
@@ -47,9 +51,17 @@ def to_xls(df, filename):
     for col_idx, col_name in enumerate(df.columns):
         sheet.write(0, col_idx, col_name)
     # Menulis data DataFrame ke sheet
+    print("row", "col", "isi", "kondisi")
     for row_idx, row_data in enumerate(df.values):
         for col_idx, cell_data in enumerate(row_data):
-            sheet.write(row_idx + 1, col_idx, cell_data)
+            print(row_idx, col_idx, cell_data, marked[row_idx][col_idx])
+            style = mark if (not marked[row_idx][col_idx]) else xlwt.Style.default_style
+            sheet.write(
+                row_idx + 1,
+                col_idx,
+                cell_data,
+                style,
+            )
 
     # Menyimpan workbook ke file Excel .xls
     workbook.save(filename)
@@ -81,8 +93,19 @@ def npwpFormat(x):
     if len(x) != 15:
         return "HARUS 15 ANGKA"
     if x[-6:] == "000000":
-        return "6 ANGKA TERAKHIR TIDAK BOLEH 000000"
+        # return "6 ANGKA TERAKHIR TIDAK BOLEH 000000"
+        return "0" * 15
     return x
+
+
+def bi_gol_pajak(x):
+    npwp = x["NPWP"]
+    if npwp == "0" * 15:
+        return "6: Individual Tanpa NPWP"
+    elif len(npwp) == 15:
+        return "9: Individual dengan NPWP"
+    else:
+        return "6: Individual Tanpa NPWP"
 
 
 def kota(y, kode_):
@@ -148,7 +171,7 @@ def suami_istri(row):
     if row["Status Kawin"] == "K: KAWIN":
         return str(row["Suami Istri"]).upper()
     elif row["Status Kawin"] in ["B: BELUM KAWIN", "D: CERAI"]:
-        return ""
+        return "'NULL"
     else:
         return ""
 
