@@ -28,6 +28,11 @@ def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 
+def replace_duplicates(series):
+    is_duplicated = series.duplicated(keep=False)
+    return series.where(~is_duplicated, "NIK Duplikat")
+
+
 def find_col(columns, key):
     ls_found = []
     for col in columns:

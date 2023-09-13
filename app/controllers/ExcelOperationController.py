@@ -119,6 +119,9 @@ def result():
             column_checked.append(column_name)
 
         df["No Identitas"] = df["No Identitas"].apply(NIKconfirm)
+        # kolom No Identitas tidak boleh ada yang sama dengan baris lain
+        df["No Identitas"] = replace_duplicates(df["No Identitas"])
+
         column_checked.append("No Identitas")
 
         df["Nama Ibu Kandung Wali"] = df["Nama Ibu Kandung Wali"].apply(
