@@ -1,4 +1,4 @@
-from app.db.mysql import session
+from app.db.mysql_connect import session
 
 
 def MakeDB():
