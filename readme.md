@@ -60,6 +60,9 @@ pip install xlwt
 pip install ordereduuid
 
 pip install --upgrade firebase-admin
+pip install sqlalchemy
+pip install mysqlclient
+
 
 ```
 

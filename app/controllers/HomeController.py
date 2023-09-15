@@ -1,4 +1,5 @@
 from flask import render_template, request, Blueprint, session, redirect
+from app.db.mysql import ExecuteOnce
 
 # from app.models.user import User
 import app.models.UserModel as User
@@ -15,7 +16,7 @@ auth = Blueprint("auth", __name__)
 @home.route("/", methods=["GET", "POST"])
 @home.route("/index", methods=["GET", "POST"])
 def index():
-    # User.registerAdmin()
+    ExecuteOnce()
     if authentication():
         return render_template("pages/home/index.html")
     else:
