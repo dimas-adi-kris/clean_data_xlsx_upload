@@ -1,4 +1,4 @@
-from flask import render_template, request, Blueprint, session, redirect
+from flask import render_template, request, Blueprint, session, redirect, flash
 from app.db.mysql_connect import db_mysql, metadata
 from sqlalchemy import Table, Column, String, text, insert, select
 from ordereduuid import OrderedUUID
@@ -20,8 +20,6 @@ auth = Blueprint("auth", __name__)
 
 def importOnce():
     from app.db.firestore import db
-
-    data_users = UserModel.get_all_data()
 
     users = Table(
         "users",
@@ -107,11 +105,13 @@ def login():
         print(username, password)
         autentikasi = User.check_password(username, password)
         if autentikasi:
-            print(autentikasi)
+            print("hello from homecontroller autentikasi")
+            print(dict(autentikasi))
             session["username"] = autentikasi["username"]
             session["role"] = autentikasi["role"]
             return redirect("/")
         else:
+            flash("Katasandi salah", "danger")
             return render_template(
                 "pages/auth/login.html", message="Login failed", status="danger"
             )

@@ -19,7 +19,7 @@ def get_all_data():
 
 
 def get_data_by_id(id):
-    activities = db_mysql.query(activity).filter_by(id=id).first()
+    activities = db_mysql.query(activity).filter_by(id=id).first()._asdict()
     return activities
     # data = db.collection("activities").document(id).get().to_dict()
     # data["id"] = id
