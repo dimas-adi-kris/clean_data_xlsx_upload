@@ -2,24 +2,26 @@ class Config(object):
     DEBUG = False
     TESTING = False
 
+
 class ProductionConfig(Config):
     DEBUG = True
 
-    DB_NAME = "development-db"
-    DB_USERNAME = "admin"
-    DB_PASSWORD = "example"
+    DB_NAME = "clean_data"
+    DB_USERNAME = "root"
+    DB_PASSWORD = ""
 
     IMAGE_UPLOADS = "./app/static/uploads"
     EXCEL_UPLOADS = "./app/static/uploads"
 
     SESSION_COOKIE_SECURE = False
 
+
 class DevelopmentConfig(Config):
     DEBUG = True
 
-    DB_NAME = "development-db"
-    DB_USERNAME = "admin"
-    DB_PASSWORD = "example"
+    DB_NAME = "clean_data"
+    DB_USERNAME = "root"
+    DB_PASSWORD = ""
 
     IMAGE_UPLOADS = "./app/static/uploads"
     EXCEL_UPLOADS = "./app/static/uploads"

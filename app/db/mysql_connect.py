@@ -1,3 +1,4 @@
+from app import app
 from sqlalchemy import (
     create_engine,
     MetaData,
@@ -17,7 +18,9 @@ from ordereduuid import OrderedUUID
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Membuat koneksi ke database
-engine = create_engine("mysql://root:@localhost/")
+engine = create_engine(
+    f"mysql://{app.config['DB_USERNAME']}:{app.config['DB_PASSWORD']}@localhost/"
+)
 Session = sessionmaker(bind=engine)
 db_mysql = Session()
 
@@ -27,14 +30,16 @@ metadata = MetaData()
 
 def ExecuteOnce():
     # Membuat database 'clean_data' jika belum ada
-    create_database_query = text("CREATE DATABASE IF NOT EXISTS clean_data")
+    create_database_query = text(
+        f"CREATE DATABASE IF NOT EXISTS {app.config['DB_NAME']}"
+    )
     db_mysql.execute(create_database_query)
 
     # Membuat tabel 'users' jika belum ada
     create_users_table_query = text(
-        """
-        USE clean_data;
-    CREATE TABLE IF NOT EXISTS clean_data.users (
+        f"""
+        USE {app.config['DB_NAME']};
+    CREATE TABLE IF NOT EXISTS {app.config['DB_NAME']}.users (
         id VARCHAR(255) PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         role VARCHAR(255) NOT NULL,
@@ -47,8 +52,8 @@ def ExecuteOnce():
 
     # Membuat tabel 'activities' jika belum ada
     create_activities_table_query = text(
-        """
-    CREATE TABLE IF NOT EXISTS clean_data.activities (
+        f"""
+    CREATE TABLE IF NOT EXISTS {app.config['DB_NAME']}.activities (
         id VARCHAR(255) PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         description TEXT
@@ -64,7 +69,7 @@ def ExecuteOnce():
 
 
 try:
-    q = text("USE clean_data")
+    q = text(f"USE {app.config['DB_NAME']}")
     db_mysql.execute(q)  # Coba gunakan database clean_data
 except OperationalError:
     # Jika database clean_data belum ada, maka buat database tersebut
