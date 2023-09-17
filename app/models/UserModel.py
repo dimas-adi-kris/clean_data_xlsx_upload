@@ -105,8 +105,10 @@ def get_data_by_username(username):
 
 
 def check_username(username):
-    data = db_mysql.query(users).filter_by(username=username).first()._asdict()
-    return data
+    data = db_mysql.query(users).filter_by(username=username).first()
+    if data is None:
+        return False
+    return data._asdict()
 
     # users_ref = db.collection("users")
     # query = users_ref.where("username", "==", username)

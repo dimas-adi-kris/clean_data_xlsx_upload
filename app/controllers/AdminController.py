@@ -40,10 +40,22 @@ def store():
 @role_required(required_role="admin")
 def update(id):
     if request.method == "POST":
+        user = User.get_data_by_id(id)
         username = request.form["username"]
+        if username != user["username"]:
+            if User.check_username(username):
+                flash("Username sudah ada", "danger")
+                return redirect("/users")
+            if is_valid_username(username) == False:
+                flash(
+                    "Username hanya boleh berisi huruf (baik besar maupun kecil), angka, dan underscore. Panjang username minimal 3 karakter dan maksimal 20 karakter",
+                    "danger",
+                )
+                return redirect("/users")
         password = request.form["password"]
         role = request.form["role"]
         User.update_data(id, username, password, role)
+        flash("User berhasil diubah", "success")
         return redirect("/users")
 
 

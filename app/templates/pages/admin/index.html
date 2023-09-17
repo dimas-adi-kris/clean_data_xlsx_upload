@@ -95,6 +95,7 @@
       $('[name="username"]').val("");
       $('[name="password"]').val("");
       $('[name="role"]').val("").change();
+      $("#form-action-user").attr("action", "{{ url_for('admin.store' ) }}");
     }
     $(".btn-add").on("click", function () {
       resetuserForm();
@@ -109,6 +110,10 @@
           $('[name="id"]').val(data.id);
           $('[name="username"]').val(data.username);
           $('[name="role"]').val(data.role).change();
+          $("#form-action-user").attr(
+            "action",
+            "{{ url_for('admin.update',id=':id' ) }}".replace(":id", id)
+          );
         },
       });
     });
