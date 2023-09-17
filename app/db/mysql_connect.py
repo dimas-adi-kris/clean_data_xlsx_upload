@@ -30,16 +30,14 @@ metadata = MetaData()
 
 def ExecuteOnce():
     # Membuat database 'clean_data' jika belum ada
-    create_database_query = text(
-        f"CREATE DATABASE IF NOT EXISTS {app.config['DB_NAME']}"
-    )
+    create_database_query = text(f"CREATE DATABASE IF NOT EXISTS {config['DB_NAME']}")
     db_mysql.execute(create_database_query)
 
     # Membuat tabel 'users' jika belum ada
     create_users_table_query = text(
         f"""
-        USE {app.config['DB_NAME']};
-    CREATE TABLE IF NOT EXISTS {app.config['DB_NAME']}.users (
+        USE {config['DB_NAME']};
+    CREATE TABLE IF NOT EXISTS {config['DB_NAME']}.users (
         id VARCHAR(255) PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         role VARCHAR(255) NOT NULL,
@@ -53,7 +51,7 @@ def ExecuteOnce():
     # Membuat tabel 'activities' jika belum ada
     create_activities_table_query = text(
         f"""
-    CREATE TABLE IF NOT EXISTS {app.config['DB_NAME']}.activities (
+    CREATE TABLE IF NOT EXISTS {config['DB_NAME']}.activities (
         id VARCHAR(255) PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         description TEXT
