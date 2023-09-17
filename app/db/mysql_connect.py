@@ -14,13 +14,13 @@ from sqlalchemy.engine.base import Connection
 from sqlalchemy.exc import OperationalError
 from ordereduuid import OrderedUUID
 
+import config
+
 # from app.models import UserModel, ActivityModel
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Membuat koneksi ke database
-engine = create_engine(
-    f"mysql://{app.config['DB_USERNAME']}:{app.config['DB_PASSWORD']}@localhost/"
-)
+engine = create_engine(f"mysql://{config.DB_USERNAME}:{config.DB_PASSWORD}@localhost/")
 Session = sessionmaker(bind=engine)
 db_mysql = Session()
 
@@ -69,7 +69,8 @@ def ExecuteOnce():
 
 
 try:
-    q = text(f"USE {app.config['DB_NAME']}")
+    # q = text(f"USE clean_data")
+    q = text(f"USE {config.DB_NAME}")
     db_mysql.execute(q)  # Coba gunakan database clean_data
 except OperationalError:
     # Jika database clean_data belum ada, maka buat database tersebut
