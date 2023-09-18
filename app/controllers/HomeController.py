@@ -3,6 +3,7 @@ from app.db.mysql_connect import db_mysql, metadata
 from sqlalchemy import Table, Column, String, text, insert, select
 from ordereduuid import OrderedUUID
 from app.models import UserModel, ActivityModel
+import config
 
 # from app.db.mysql_connect import ExecuteOnce
 
@@ -19,6 +20,41 @@ auth = Blueprint("auth", __name__)
 
 
 def importOnce():
+    # Membuat database 'clean_data' jika belum ada
+    create_database_query = text(f"CREATE DATABASE IF NOT EXISTS {config.DB_NAME}")
+    db_mysql.execute(create_database_query)
+
+    # Membuat tabel 'users' jika belum ada
+    create_users_table_query = text(
+        f"""
+        USE {config.DB_NAME};
+    CREATE TABLE IF NOT EXISTS {config.DB_NAME}.users (
+        id VARCHAR(255) PRIMARY KEY,
+        username VARCHAR(255) NOT NULL,
+        role VARCHAR(255) NOT NULL,
+        password VARCHAR(255) NOT NULL
+    );
+
+    """
+    )
+    db_mysql.execute(create_users_table_query)
+
+    # Membuat tabel 'activities' jika belum ada
+    create_activities_table_query = text(
+        f"""
+    CREATE TABLE IF NOT EXISTS {config.DB_NAME}.activities (
+        id VARCHAR(255) PRIMARY KEY,
+        username VARCHAR(255) NOT NULL,
+        description TEXT
+    );
+
+    """
+    )
+    db_mysql.execute(create_activities_table_query)
+
+    # Commit perubahan ke database
+    db_mysql.commit()
+
     from app.db.firestore import db
 
     users = Table(
