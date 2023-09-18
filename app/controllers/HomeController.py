@@ -39,19 +39,6 @@ def importOnce():
     )
     db_mysql.execute(create_users_table_query)
 
-    # Membuat tabel 'activities' jika belum ada
-    create_activities_table_query = text(
-        f"""
-    CREATE TABLE IF NOT EXISTS {config.DB_NAME}.activities (
-        id VARCHAR(255) PRIMARY KEY,
-        username VARCHAR(255) NOT NULL,
-        description TEXT
-    );
-
-    """
-    )
-    db_mysql.execute(create_activities_table_query)
-
     # Commit perubahan ke database
     db_mysql.commit()
 
