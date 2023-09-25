@@ -1,4 +1,4 @@
-DB_NAME = "clean_data"
+DB_NAME = "data_clean"
 DB_USERNAME = "root"
 DB_PASSWORD = ""
 

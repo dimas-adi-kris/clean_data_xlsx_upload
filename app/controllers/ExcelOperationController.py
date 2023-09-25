@@ -381,7 +381,6 @@ def result():
             fileNoExt=fileNoExt,
         )
     except Exception as e:
-        print(filename, e)
         if session["role"] == "admin":
             flash(f"Terjadi kesalahan, silahkan coba lagi. Error : {e}", "danger")
         else:

@@ -57,10 +57,8 @@ def to_xls(df, filename, marked=None):
     for col_idx, col_name in enumerate(df.columns):
         sheet.write(0, col_idx, col_name)
     # Menulis data DataFrame ke sheet
-    # print("row", "col", "isi", "kondisi")
     for row_idx, row_data in enumerate(df.values):
         for col_idx, cell_data in enumerate(row_data):
-            # print(row_idx, col_idx, cell_data, marked[row_idx][col_idx])
             style = mark if (not marked[row_idx][col_idx]) else default
             sheet.write(
                 row_idx + 1,

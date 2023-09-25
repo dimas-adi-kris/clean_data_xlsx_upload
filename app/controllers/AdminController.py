@@ -71,5 +71,4 @@ def delete(id):
 @role_required(required_role="admin")
 def show(id):
     user = User.get_data_by_id(id)
-    print(user)
     return jsonify(user)

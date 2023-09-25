@@ -1,4 +1,3 @@
-from app.db.firestore import db
 from app.db.mysql_connect import db_mysql, metadata
 from sqlalchemy import Table, Column, String, text, insert, select, update, delete
 from ordereduuid import OrderedUUID
