@@ -36,6 +36,7 @@ def login():
         password = request.form.get("password")
         autentikasi = User.check_password(username, password)
         if autentikasi:
+            session['id'] = autentikasi['id']
             session["username"] = autentikasi["username"]
             session["role"] = autentikasi["role"]
             return redirect("/")
@@ -84,3 +85,16 @@ def forget_password():
         else:
             flash("Usename tidak ditemukan", "danger")
         return redirect("/login")
+    
+# @auth.route("/update-password", methods=["GET", "POST"])
+# def update_password_user():
+#     if request.method == "POST":
+#         id = request.form["id"]
+#         user = User.get_data_by_id(id)
+#         if not user:
+#             flash("Username tidak ada", "danger")
+#             return redirect(request.referrer)
+#         password = request.form["password"]
+#         User.update_password(user['username'], password)
+#         flash("Password berhasil diubah", "success")
+#         return redirect(request.referrer)

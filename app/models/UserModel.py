@@ -20,8 +20,10 @@ def get_all_data():
 
 
 def get_data_by_id(id):
-    data = db_mysql.query(users).filter_by(id=id).first()._asdict()
-    return data
+    data = db_mysql.query(users).filter_by(id=id).first()
+    if data is None:
+        return False
+    return data._asdict()
 
 
 def add_user(username, password, role):

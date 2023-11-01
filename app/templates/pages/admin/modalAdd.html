@@ -53,3 +53,30 @@
     </div>
   </div>
 </div>
+
+<script>
+
+  $(document).ready(function () {
+    $(".btn-add").on("click", function () {
+      resetuserForm();
+    });
+
+    $(".btn-edit").on("click", function () {
+      resetuserForm();
+      var id = $(this).data("id");
+      $.ajax({
+        url: " {{ url_for('admin.show',id=':id' ) }}".replace(":id", id),
+        method: "GET",
+        success: function (data) {
+          $('[name="id"]').val(data.id);
+          $('[name="username"]').val(data.username);
+          $('[name="role"]').val(data.role).change();
+          $("#form-action-user").attr(
+            "action",
+            "{{ url_for('admin.update',id=':id' ) }}".replace(":id", id)
+          );
+        },
+      });
+    });
+  })
+</script>

@@ -58,45 +58,24 @@
   </div>
 </div>
 
-{% include 'pages/admin/modalAdd.html' %}
-{% include 'pages/admin/modalDelete.html' %}
 {% endblock %}
 
 {% block after_script %}
+
 <script>
+  function resetuserForm() {
+    $('[name="id"]').val("");
+    $('[name="username"]').val("");
+    $('[name="password"]').val("");
+    $('[name="role"]').val("").change();
+    $("#form-action-user").attr("action", "{{ url_for('admin.store' ) }}");
+  }
   $(document).ready(function () {
     $("#DataTable").DataTable({
       paging: false,
       ordering: false,
       info: false,
       searching: false,
-    });
-    function resetuserForm() {
-      $('[name="id"]').val("");
-      $('[name="username"]').val("");
-      $('[name="password"]').val("");
-      $('[name="role"]').val("").change();
-      $("#form-action-user").attr("action", "{{ url_for('admin.store' ) }}");
-    }
-    $(".btn-add").on("click", function () {
-      resetuserForm();
-    });
-    $(".btn-edit").on("click", function () {
-      resetuserForm();
-      var id = $(this).data("id");
-      $.ajax({
-        url: " {{ url_for('admin.show',id=':id' ) }}".replace(":id", id),
-        method: "GET",
-        success: function (data) {
-          $('[name="id"]').val(data.id);
-          $('[name="username"]').val(data.username);
-          $('[name="role"]').val(data.role).change();
-          $("#form-action-user").attr(
-            "action",
-            "{{ url_for('admin.update',id=':id' ) }}".replace(":id", id)
-          );
-        },
-      });
     });
 
     $(".btn-delete").on("click", function () {
@@ -109,4 +88,9 @@
     });
   });
 </script>
+
+
+{% include 'pages/admin/modalAdd.html' %}
+{% include 'pages/admin/modalDelete.html' %}
+
 {% endblock %}
