@@ -1,4 +1,6 @@
-{% extends "includes/templates.html" %} {% block title %}Main App{% endblock %}
+{% extends "includes/templates.html" %}
+
+{% block title %}Main App{% endblock %}
 {% block main %}
 <div class="container">
   {% include 'includes/error.html' %}
@@ -10,12 +12,8 @@
   </div>
   <div class="row outer-box border text-center" id="daftar-excel">
     <div class="container pt-5 pr-5">
-      <button
-        type="button"
-        class="btn btn-primary btn-icon-split btn-add float-right"
-        data-toggle="modal"
-        data-target="#staticBackdrop"
-      >
+      <button type="button" class="btn btn-primary btn-icon-split btn-add float-right" data-toggle="modal"
+        data-target="#staticBackdrop">
         <span class="icon text-white-50">
           <i class="fas fa-plus"></i>
         </span>
@@ -24,12 +22,7 @@
     </div>
     <div class="container my-5">
       <div class="table-responsive" id="tabel-daftar-nama-file">
-        <table
-          class="table table-bordered"
-          id="DataTable"
-          width="100%"
-          cellspacing="0"
-        >
+        <table class="table table-bordered" id="DataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>No.</th>
@@ -43,31 +36,16 @@
               <td>{{loop.index}}</td>
               <td>{{user.username}}</td>
               <td class="text-center" width="160px">
-                <span
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Update User"
-                >
-                  <div
-                    data-id="{{user.id}}"
-                    class="btn btn-primary btn-sm btn-edit"
-                    data-toggle="modal"
-                    data-target="#staticBackdrop"
-                  >
+                <span data-toggle="tooltip" data-placement="top" title="Update User">
+                  <div data-id="{{user.id}}" class="btn btn-primary btn-sm btn-edit" data-toggle="modal"
+                    data-target="#staticBackdrop">
                     <i class="far fa-edit"></i>
                   </div>
                 </span>
 
-                <button
-                  type="button"
-                  data-id="{{user.id}}"
-                  class="btn btn-danger btn-sm btn-delete"
-                  data-remote="{{ url_for('admin.delete',id=user.id ) }}"
-                  data-toggle="modal"
-                  data-target="#deleteModal"
-                  data-title="Delete User"
-                  title="Delete User"
-                >
+                <button type="button" data-id="{{user.id}}" class="btn btn-danger btn-sm btn-delete"
+                  data-remote="{{ url_for('admin.delete',id=user.id ) }}" data-toggle="modal" data-target="#deleteModal"
+                  data-title="Delete User" title="Delete User">
                   <i class="far fa-trash-alt"></i>
                 </button>
               </td>
@@ -80,8 +58,11 @@
   </div>
 </div>
 
-{% include 'pages/admin/modalAdd.html' %} {% include
-'pages/admin/modalDelete.html' %} {% endblock %} {% block after_script %}
+{% include 'pages/admin/modalAdd.html' %}
+{% include 'pages/admin/modalDelete.html' %}
+{% endblock %}
+
+{% block after_script %}
 <script>
   $(document).ready(function () {
     $("#DataTable").DataTable({

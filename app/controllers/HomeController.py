@@ -71,3 +71,16 @@ def register():
 def logout():
     session.clear()
     return redirect("/")
+
+@auth.route("/forget_password", methods=["GET", "POST"])
+def forget_password():
+    if request.method == "GET":
+        return render_template("pages/auth/forget-password.html")
+    else:
+        username = request.form.get("login")
+        password = '123456'
+        if User.update_password(username, password):
+            flash("Reset password success", "success")
+        else:
+            flash("Usename tidak ditemukan", "danger")
+        return redirect("/login")

@@ -85,3 +85,17 @@ def registerAdmin():
     )
     db_mysql.execute(stmt)
     return {"id": id, "username": "admin"}
+
+def update_password(username, password):
+    if check_username(username) == False:
+        return False
+    stmt = (
+        update(users)
+        .where(users.c.username == username)
+        .values(
+            password=generate_password_hash(password),
+        )
+    )
+    res = db_mysql.execute(stmt)
+    print(res,stmt)
+    return True
