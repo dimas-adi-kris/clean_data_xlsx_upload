@@ -175,7 +175,8 @@ Werkzeug adalah pustaka Python yang digunakan sebagai utilitas web untuk membang
 ```
 py -m venv jupyter
 .\jupyter\Scripts\activate
-pip install notebook werkzeug ordereduuid firebase-admin
+pip install notebook werkzeug
+<!-- ordereduuid firebase-admin -->
 jupyter notebook
 
 ```

@@ -2,6 +2,7 @@ import os, re, glob
 import json
 import pandas as pd
 import numpy as np
+from openpyxl import load_workbook
 
 
 from app import app
@@ -60,14 +61,31 @@ def result():
         )
     elif ext in ["xlsx", "xls"]:
         df_old = pd.read_excel(
-            os.path.join(app.config["EXCEL_UPLOADS"], filename),
+            os.path.join(app.config["EXCEL_UPLOADS"], filename), 
             dtype=str,
             keep_default_na=False,
-        )
+            skiprows=0,
+            nrows=1500
+            )
+        # df_old = pd.read_excel(
+        #     os.path.join(app.config["EXCEL_UPLOADS"], filename),
+        #     dtype=str,
+        #     keep_default_na=False,
+        # )
     else:
         return render_template(
             "public/index.html", feedback="Format file salah", status="danger"
         )
+    if len(df_old)>1000:
+        print("Data terlalu banyak, program akan menjalankannya di mode optimalisasi")
+        wb = load_workbook(os.path.join(app.config["EXCEL_UPLOADS"], filename),read_only=True)
+        # filename = filename.split('.')[:-1][0]+"_opt.xlsx"
+        sheet = wb[wb.sheetnames[0]]
+        total_rows = sheet.max_row
+        repeat_process = (total_rows//1000)+1
+        print(f"Total baris : {total_rows}, Excel akan dibagi menjadi {repeat_process} bagian.")
+    else:
+        repeat_process = 1
     # Hapus kolom Unnamed karena itu index baris yang tidak akan dipakai
     df_old = df_old.loc[:, ~df_old.columns.str.contains("Unnamed")]
     df_old = df_old.fillna("")
@@ -81,12 +99,32 @@ def result():
                 remove_special_characters(col_change[col]).split()
             )
     df_old = df_old.rename(columns=col_change)
-    df = df_old.copy()
+    the_right_column = df_old.columns
+    # df = df_old.copy()
+    for repeat in range(repeat_process):
+        print(f'saving {repeat}')
+        df_old = pd.read_excel(
+            os.path.join(app.config["EXCEL_UPLOADS"], filename),
+            dtype=str,
+            keep_default_na=False,
+            skiprows=repeat*1000,
+            nrows=1000
+        )
+        df_old.to_excel(os.path.join(app.config["EXCEL_UPLOADS"], fileNoExt+"-opt-"+str(repeat)+".xlsx"), index=False)
 
+    del df_old
     column_checked = []
-    try:
+    # try:
         # Cleaning Column name
-
+    for repeat in range(repeat_process):
+        df_old = pd.read_excel(
+            os.path.join(app.config["EXCEL_UPLOADS"], fileNoExt+"-opt-"+str(repeat)+".xlsx"),
+            dtype=str,
+            keep_default_na=False,
+        )
+        df_old.columns = the_right_column
+        df = df_old.copy()
+        print(f"Repeat ke-{repeat+1}")
         df["Nama"] = df["Nama"].fillna("").apply(remove_special_characters)
         df["Nama"] = df["Nama"].apply(uppercase)
         df["Nama"] = df["Nama"].apply(no_double_space)
@@ -313,7 +351,7 @@ def result():
         if total_false == 0:
             # Masuk ke sini jika tidak ada data yang berubah
             os.makedirs(app.config["EXCEL_UPLOADS"] + "/fix/", exist_ok=True)
-            filename_to_save = fileNoExt + "-fix"
+            filename_to_save = f"{fileNoExt}-{repeat}-fix"
             to_xls(
                 df,
                 os.path.join(
@@ -324,7 +362,7 @@ def result():
             # Berisi semua data yang berubah selain styled_no_change
             # karena kolom di styled_no_change kalau salah, hanya diberi warna saja
             os.makedirs(app.config["EXCEL_UPLOADS"] + "/revisi/", exist_ok=True)
-            filename_to_save = fileNoExt + "-full"
+            filename_to_save = f"{fileNoExt}-{repeat}-full"
             df_full = df.copy()
             df_full[styled_no_change] = df_old[styled_no_change]
             to_xls(
@@ -336,7 +374,8 @@ def result():
                 df_marked.values,
             )
 
-            filename_valid = fileNoExt + "-valid-revisi"
+            # filename_valid = fileNoExt + "-valid-revisi"
+            filename_valid = f'{fileNoExt}-{repeat}-valid-revisi'
             # df_valid = df[styled_no_change]
             df_valid = df.copy()
             to_xls(
@@ -361,12 +400,7 @@ def result():
         # df.to_excel(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xlsx'), index=False)
         # to_xls(df,os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xls'))
         # df.to_csv(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.csv'), index=False)
-        if "AUTHOR" not in app.config:
-            Activity.add_activity(
-                session["username"],
-                f'Username {session["username"]} mengunggah file {filename}',
-            )
-
+    if repeat_process>1:
         return render_template(
             "pages/result/index.html",
             feedback="",
@@ -379,15 +413,26 @@ def result():
             daftar_revisi=daftar_revisi,
             total_false=total_false,
             fileNoExt=fileNoExt,
+            repeat_process=repeat_process
         )
-    except Exception as e:
-        if session["role"] == "admin":
-            flash(f"Terjadi kesalahan, silahkan coba lagi. Error : {e}", "danger")
-        else:
-            flash("Terjadi kesalahan, silahkan coba lagi", "danger")
+    else:
         return render_template(
-            "pages/home/index.html",
+            "pages/result/index.html",
+            feedback="",
+            status="success",
+            column=old_col,
+            total_false=total_false,
+            repeat_process=repeat_process
         )
+    
+    # except Exception as e:
+    #     if session["role"] == "admin":
+    #         flash(f"Terjadi kesalahan, silahkan coba lagi. Error : {e}", "danger")
+    #     else:
+    #         flash("Terjadi kesalahan, silahkan coba lagi", "danger")
+    #     return render_template(
+    #         "pages/home/index.html",
+    #     )
 
 
 @excel.route("/daftar-excel/")

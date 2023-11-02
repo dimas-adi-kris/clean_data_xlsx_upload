@@ -1,48 +1,48 @@
 {% extends "includes/templates.html" %} {% block title %}Main App{% endblock %}
 {% block main %}
 
-    <!--   Big container   -->
-    <div class="container">
-      {% include 'includes/error.html' %}
-      <div class="row text-center justify-content-center">
-        <div class="row" style="display: inline; width: 100%">
-          <h2>Excel data cleaner</h2>
-        </div>
-        <h4>
-          Perbaiki data excel dari format format. Upload satu file excel dan temukan
-          perbedaannya
-        </h4>
-      </div>
-      <div class="row outer-box border text-center p-5">        
-          <div class="w-100">
-            {% if total_false==0 %}
-              
-            <a class="btn-submit" href="{{url_for('static', filename='uploads/fix/'+filenameXls)}}"
-              >Download File (xls)</a
-            >
-            {% else %}
-            <a class="btn-submit" href="{{url_for('static', filename='uploads/revisi/'+fileNoExt+'-full.xls')}}"
-              >Download Full</a
-            >
-            <a class="btn-submit" href="{{url_for('static', filename='uploads/revisi/'+fileNoExt+'-valid-revisi.xls')}}"
-              >Download Valid</a
-            >
+<!--   Big container   -->
+<div class="container">
+  {% include 'includes/error.html' %}
+  <div class="row text-center justify-content-center">
+    <div class="row" style="display: inline; width: 100%">
+      <h2>Excel data cleaner</h2>
+    </div>
+    <h4>
+      Perbaiki data excel dari format format. Upload satu file excel dan temukan
+      perbedaannya
+    </h4>
+  </div>
+  <div class="row outer-box border text-center p-5">
+    <div class="row inner-box border text-center w-100">
+      {% if repeat_process==1 %}
+      {% if total_false==0 %}
+      <a class="btn-submit" href="{{url_for('static', filename='uploads/fix/'+filenameXls)}}">Download File (xls)</a>
+      {% else %}
+      <a class="btn-submit" href="{{url_for('static', filename='uploads/revisi/'+fileNoExt+'-full.xls')}}">Download
+        Full</a>
+      <a class="btn-submit"
+        href="{{url_for('static', filename='uploads/revisi/'+fileNoExt+'-valid-revisi.xls')}}">Download Valid</a>
+      {% endif %}
+      {% else %}
+      <p>Total baris lebih dari 1000. Buka <a href="/daftar-excel">Excel yang telah diproses</a> untuk melihat hasilnya
+      </p>
 
-            {% endif %}
-          </div>
-          <!-- Button trigger modal -->
-          <!-- <div class="mt-5 w-100">
+      {% endif %}
+    </div>
+    <!-- Button trigger modal -->
+    <!-- <div class="mt-5 w-100">
             <button type="button" class="btn-submit" data-toggle="modal" data-target="#exampleModal">
               Daftar Yang Telah Di Proses
             </button>
           </div> -->
-        
-      </div>
-    </div>
-    
-    
-    <!-- Modal -->
-    <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+  </div>
+</div>
+
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -82,15 +82,15 @@
         </div>
       </div>
     </div> -->
-    
-    
-    
 
-    <div class="footer">
-      <div class="container text-center"></div>
-    </div>
-    
-    {% endblock %} {% block script %}
+
+
+
+<div class="footer">
+  <div class="container text-center"></div>
+</div>
+
+{% endblock %} {% block script %}
 <script>
   var table = $("#DataTable").DataTable({
     paging: false,

@@ -14,62 +14,36 @@
       <td>
         <!--  -->
         {% if path_dict[nama_file] == 'fix' %}
-        <a
-          class="btn btn-primary btn-sm m-1"
-          href="{{url_for('static', filename='uploads/fix/'+nama_file+'.xls')}}"
-          data-toggle="tooltip"
-          data-placement="top"
-          title="Download Xls"
-          >Download</a
-        >
+        <a class="btn btn-primary btn-sm m-1" href="{{url_for('static', filename='uploads/fix/'+nama_file+'.xls')}}"
+          data-toggle="tooltip" data-placement="top" title="Download Xls">Download</a>
         <!--  -->
         {% endif %}
         <!--  -->
 
         {% if '-full' in path_dict[nama_file] %}
-        <a
-          class="btn btn-primary btn-sm m-1"
-          href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-full.xls')}}"
-          data-toggle="tooltip"
-          data-placement="top"
-          title="Semua data termasuk valid dan non valid"
-          >Download Full</a
-        >
+        <a class="btn btn-primary btn-sm m-1"
+          href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-full.xls')}}" data-toggle="tooltip"
+          data-placement="top" title="Semua data termasuk valid dan non valid">Download Full</a>
         <!--  -->
         {% endif %}
         <!--  -->
         {% if '-not-valid-revisi' in path_dict[nama_file] %}
-        <a
-          class="btn btn-primary btn-sm m-1"
+        <a class="btn btn-primary btn-sm m-1"
           href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-not-valid-revisi.xls')}}"
-          data-toggle="tooltip"
-          data-placement="top"
-          title="Data non valid"
-          >Not Valid</a
-        >
+          data-toggle="tooltip" data-placement="top" title="Data non valid">Not Valid</a>
         <!--  -->
         {% endif %}
         <!--  -->
         {% if '-valid-revisi' in path_dict[nama_file] %}
-        <a
-          class="btn btn-primary btn-sm m-1"
-          href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-valid-revisi.xls')}}"
-          data-toggle="tooltip"
-          data-placement="top"
-          title="Data valid"
-          >Valid</a
-        >
+        <a class="btn btn-primary btn-sm m-1"
+          href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-valid-revisi.xls')}}" data-toggle="tooltip"
+          data-placement="top" title="Data valid">Valid</a>
         <!--  -->
         {% endif %}
         <!--  -->
         <span data-toggle="tooltip" data-placement="top" title="Detail Kolom">
-          <button
-            type="button"
-            class="btn btn-primary btn-sm m-1 btn-detail-kolom"
-            data-toggle="modal"
-            data-target="#detailKolom"
-            data-nama-file="{{nama_file}}"
-          >
+          <button type="button" class="btn btn-primary btn-sm m-1 btn-detail-kolom" data-toggle="modal"
+            data-target="#detailKolom" data-nama-file="{{nama_file}}">
             Detail Kolom
           </button>
         </span>
