@@ -5,7 +5,7 @@ from ordereduuid import OrderedUUID
 from app.models import UserModel, ActivityModel
 import config
 
-# from app.db.mysql_connect import ExecuteOnce
+from app.db.mysql_connect import ExecuteOnce
 
 # from app.models.user import User
 import app.models.UserModel as User
@@ -29,6 +29,9 @@ def index():
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
+    ExecuteOnce()
+    if not UserModel.check_username('admin'):
+        UserModel.add_user('admin','admin','admin')
     if request.method == "GET":
         return render_template("pages/auth/login.html")
     else:

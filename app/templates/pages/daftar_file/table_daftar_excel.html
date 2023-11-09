@@ -7,10 +7,10 @@
     </tr>
   </thead>
   <tbody>
-    {%for nama_file in daftar_nama_file%}
+    {%for nama_file in daftar_nama_file %}
     <tr>
       <td>{{loop.index}}</td>
-      <td>{{nama_file}}</td>
+      <td id="file_{{idx}}">{{nama_file}}</td>
       <td>
         <!--  -->
         {% if path_dict[nama_file] == 'fix' %}

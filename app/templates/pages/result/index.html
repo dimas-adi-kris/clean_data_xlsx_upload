@@ -14,7 +14,7 @@
     </h4>
   </div>
   <div class="row outer-box border text-center p-5">
-    <div class="row inner-box border text-center w-100">
+    <div class="inner-box border text-center w-100 p-5">
       {% if repeat_process==1 %}
       {% if total_false==0 %}
       <a class="btn-submit" href="{{url_for('static', filename='uploads/fix/'+filenameXls)}}">Download File (xls)</a>
@@ -25,7 +25,7 @@
         href="{{url_for('static', filename='uploads/revisi/'+fileNoExt+'-valid-revisi.xls')}}">Download Valid</a>
       {% endif %}
       {% else %}
-      <p>Total baris lebih dari 1000. Buka <a href="/daftar-excel">Excel yang telah diproses</a> untuk melihat hasilnya
+      <p class='btn-submit'>Total baris lebih dari 1000. Buka <a href="/daftar-excel">Excel yang telah diproses</a> untuk melihat hasilnya
       </p>
 
       {% endif %}

@@ -20,11 +20,7 @@
     <div class="container m-2 p-0">
       <div class="col-2">
         <div class="row form-group">
-          <select
-            name="filter-file"
-            class="form-control"
-            id="exampleFormControlSelect1"
-          >
+          <select name="filter-file" class="form-control" id="exampleFormControlSelect1">
             <option value="Semua" selected>Semua</option>
             <option value="fix">Fix</option>
             <option value="revisi">Perlu revisi</option>
@@ -34,12 +30,7 @@
     </div>
     <div class="container mb-5">
       <div class="table-responsive" id="tabel-daftar-nama-file">
-        <table
-          class="table table-bordered"
-          id="DataTable"
-          width="100%"
-          cellspacing="0"
-        >
+        <table class="table table-bordered" id="DataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>No.</th>
@@ -51,71 +42,48 @@
             {%for nama_file in daftar_nama_file%}
             <tr>
               <td>{{loop.index}}</td>
-              <td>{{nama_file}}</td>
+              <td id="file_{{loop.index}}">{{nama_file}}</td>
               <td>
                 <!--  -->
                 {% if path_dict[nama_file] == 'fix' %}
-                <a
-                  class="btn btn-primary btn-sm m-1"
-                  href="{{url_for('static', filename='uploads/fix/'+nama_file+'.xls')}}"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Download Xls"
-                  >Download</a
-                >
+                <a class="btn btn-primary btn-sm m-1"
+                  href="{{url_for('static', filename='uploads/fix/'+nama_file+'.xls')}}" data-toggle="tooltip"
+                  data-placement="top" title="Download Xls">Download</a>
                 <!--  -->
                 {% endif %}
                 <!--  -->
 
                 {% if '-full' in path_dict[nama_file] %}
-                <a
-                  class="btn btn-primary btn-sm m-1"
-                  href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-full.xls')}}"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Semua data termasuk valid dan non valid"
-                  >Download Full</a
-                >
+                <a class="btn btn-primary btn-sm m-1"
+                  href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-full.xls')}}" data-toggle="tooltip"
+                  data-placement="top" title="Semua data termasuk valid dan non valid">Download Full</a>
                 <!--  -->
                 {% endif %}
                 <!--  -->
                 {% if '-not-valid-revisi' in path_dict[nama_file] %}
-                <a
-                  class="btn btn-primary btn-sm m-1"
+                <a class="btn btn-primary btn-sm m-1"
                   href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-not-valid-revisi.xls')}}"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Data non valid"
-                  >Not Valid</a
-                >
+                  data-toggle="tooltip" data-placement="top" title="Data non valid">Not Valid</a>
                 <!--  -->
                 {% endif %}
                 <!--  -->
                 {% if '-valid-revisi' in path_dict[nama_file] %}
-                <a
-                  class="btn btn-primary btn-sm m-1"
+                <a class="btn btn-primary btn-sm m-1"
                   href="{{url_for('static', filename='uploads/revisi/'+nama_file+'-valid-revisi.xls')}}"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Data valid"
-                  >Valid</a
-                >
+                  data-toggle="tooltip" data-placement="top" title="Data valid">Valid</a>
                 <!--  -->
                 {% endif %}
                 <!--  -->
-                <span
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Detail Kolom"
-                >
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm m-1 btn-detail-kolom"
-                    data-toggle="modal"
-                    data-target="#detailKolom"
-                    data-nama-file="{{nama_file}}"
-                  >
+                <span data-toggle="tooltip" data-placement="top" title="Detail Kolom">
+                  <button type="button" class="btn btn-primary btn-sm m-1 btn-detail-kolom" data-toggle="modal"
+                    data-target="#detailKolom" data-nama-file="{{nama_file}}">
                     Detail Kolom
+                  </button>
+                </span>
+                <span data-toggle="tooltip" data-placement="top" title="Detail Baris">
+                  <button type="button" class="btn btn-primary btn-sm m-1 btn-detail-baris" data-toggle="modal"
+                    data-target="#detailBaris" data-nama-file="{{nama_file}}">
+                    Detail Baris
                   </button>
                 </span>
               </td>
@@ -128,25 +96,14 @@
   </div>
 </div>
 
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="detailKolom"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="detailKolomLabel"
-  aria-hidden="true"
->
+<!-- Modal detail kolom -->
+<div class="modal fade" id="detailKolom" tabindex="-1" role="dialog" aria-labelledby="detailKolomLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="detailKolomLabel">Detail Kolom</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -157,6 +114,34 @@
             baris yang kosong
           </p>
           <div id="content-detail-kolom"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal detail Baris -->
+<div class="modal fade" id="detailBaris" tabindex="-1" role="dialog" aria-labelledby="detailBarisLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailBarisLabel">Detail Baris</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <p>
+            Berikut adalah daftar Baris yang telah diperiksa beserta jumlah
+            baris yang kosong
+          </p>
+          <div id="content-detail-baris"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -211,6 +196,18 @@
           nama_file
         );
       $("#content-detail-kolom").load(url);
+    });
+    $(".btn-detail-baris").on("click", function () {
+      var nama_file = $(this).data("nama-file");
+      nama_file = encodeURI(nama_file);
+      console.log(nama_file);
+      let url =
+        "{{ url_for('excel.detail_baris',filename=':filename') }}".replace(
+          ":filename",
+          nama_file
+        );
+      console.log(url);
+      $("#content-detail-baris").load(url);
     });
   });
 </script>

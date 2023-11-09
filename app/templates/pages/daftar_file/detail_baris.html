@@ -1,0 +1,26 @@
+<table class="table table-bordered" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Baris</th>
+      <th>Kolom</th>
+      <th>Data Sebelum</th>
+      <th>Data Sesudah</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% set curr_row = {'idx':999} %}
+    {%for row in range(len_data) %}
+    <tr>
+      <td>
+        {% if curr_row['idx'] != detail_row[row][0] %}
+          {{detail_row[row][0]}}
+        {% endif %}
+        {% if curr_row.update({'idx':detail_row[row][0]})%} {% endif %}
+      </td>
+      <td>{{detail_row[row][1]}}</td>
+      <td>{{detail_row[row][2]}}</td>
+      <td>{{detail_row[row][3]}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>

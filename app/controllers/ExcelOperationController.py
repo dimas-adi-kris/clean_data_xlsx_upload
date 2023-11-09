@@ -61,12 +61,12 @@ def result():
         )
     elif ext in ["xlsx", "xls"]:
         df_old = pd.read_excel(
-            os.path.join(app.config["EXCEL_UPLOADS"], filename), 
+            os.path.join(app.config["EXCEL_UPLOADS"], filename),
             dtype=str,
             keep_default_na=False,
             skiprows=0,
-            nrows=1500
-            )
+            nrows=1500,
+        )
         # df_old = pd.read_excel(
         #     os.path.join(app.config["EXCEL_UPLOADS"], filename),
         #     dtype=str,
@@ -76,14 +76,18 @@ def result():
         return render_template(
             "public/index.html", feedback="Format file salah", status="danger"
         )
-    if len(df_old)>1000:
+    if len(df_old) > 1000:
         print("Data terlalu banyak, program akan menjalankannya di mode optimalisasi")
-        wb = load_workbook(os.path.join(app.config["EXCEL_UPLOADS"], filename),read_only=True)
+        wb = load_workbook(
+            os.path.join(app.config["EXCEL_UPLOADS"], filename), read_only=True
+        )
         # filename = filename.split('.')[:-1][0]+"_opt.xlsx"
         sheet = wb[wb.sheetnames[0]]
         total_rows = sheet.max_row
-        repeat_process = (total_rows//1000)+1
-        print(f"Total baris : {total_rows}, Excel akan dibagi menjadi {repeat_process} bagian.")
+        repeat_process = (total_rows // 1000) + 1
+        print(
+            f"Total baris : {total_rows}, Excel akan dibagi menjadi {repeat_process} bagian."
+        )
     else:
         repeat_process = 1
     # Hapus kolom Unnamed karena itu index baris yang tidak akan dipakai
@@ -102,23 +106,30 @@ def result():
     the_right_column = df_old.columns
     # df = df_old.copy()
     for repeat in range(repeat_process):
-        print(f'saving {repeat}')
+        print(f"saving {repeat}")
         df_old = pd.read_excel(
             os.path.join(app.config["EXCEL_UPLOADS"], filename),
             dtype=str,
             keep_default_na=False,
-            skiprows=repeat*1000,
-            nrows=1000
+            skiprows=repeat * 1000,
+            nrows=1000,
         )
-        df_old.to_excel(os.path.join(app.config["EXCEL_UPLOADS"], fileNoExt+"-opt-"+str(repeat)+".xlsx"), index=False)
+        df_old.to_excel(
+            os.path.join(
+                app.config["EXCEL_UPLOADS"], fileNoExt + "-opt-" + str(repeat) + ".xlsx"
+            ),
+            index=False,
+        )
 
     del df_old
     column_checked = []
     # try:
-        # Cleaning Column name
+    # Cleaning Column name
     for repeat in range(repeat_process):
         df_old = pd.read_excel(
-            os.path.join(app.config["EXCEL_UPLOADS"], fileNoExt+"-opt-"+str(repeat)+".xlsx"),
+            os.path.join(
+                app.config["EXCEL_UPLOADS"], fileNoExt + "-opt-" + str(repeat) + ".xlsx"
+            ),
             dtype=str,
             keep_default_na=False,
         )
@@ -375,7 +386,7 @@ def result():
             )
 
             # filename_valid = fileNoExt + "-valid-revisi"
-            filename_valid = f'{fileNoExt}-{repeat}-valid-revisi'
+            filename_valid = f"{fileNoExt}-{repeat}-valid-revisi"
             # df_valid = df[styled_no_change]
             df_valid = df.copy()
             to_xls(
@@ -400,7 +411,16 @@ def result():
         # df.to_excel(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xlsx'), index=False)
         # to_xls(df,os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.xls'))
         # df.to_csv(os.path.join(app.config["EXCEL_UPLOADS"], filename_to_save+'.csv'), index=False)
-    if repeat_process>1:
+    if repeat_process > 1:
+        return render_template(
+            "pages/result/index.html",
+            feedback="",
+            status="success",
+            column=old_col,
+            total_false=total_false,
+            repeat_process=repeat_process,
+        )
+    else:
         return render_template(
             "pages/result/index.html",
             feedback="",
@@ -413,18 +433,9 @@ def result():
             daftar_revisi=daftar_revisi,
             total_false=total_false,
             fileNoExt=fileNoExt,
-            repeat_process=repeat_process
+            repeat_process=repeat_process,
         )
-    else:
-        return render_template(
-            "pages/result/index.html",
-            feedback="",
-            status="success",
-            column=old_col,
-            total_false=total_false,
-            repeat_process=repeat_process
-        )
-    
+
     # except Exception as e:
     #     if session["role"] == "admin":
     #         flash(f"Terjadi kesalahan, silahkan coba lagi. Error : {e}", "danger")
@@ -513,5 +524,48 @@ def detail_kolom(filename):
         "pages/daftar_file/detail_kolom.html",
         empty_row_counts=empty_row_counts,
         data_key=list(empty_row_counts.keys()),
+        filename=filename,
+    )
+
+
+@excel.route("/daftar-excel/detail-baris/<filename>")
+def detail_baris(filename):
+    if not os.path.exists(
+        os.path.join(
+            app.config["EXCEL_UPLOADS"] + "/revisi/" + filename + "-baris-full.json"
+        )
+    ):
+        excel_marked = f'{filename}-valid-revisi.xls'
+        excel_ori = f'{filename}-full.xls'
+        df_marked = pd.read_excel(f'{app.config["EXCEL_UPLOADS"]}/revisi/{excel_marked}', sheet_name='Sheet1')
+        df_ori = pd.read_excel(f'{app.config["EXCEL_UPLOADS"]}/revisi/{excel_ori}', sheet_name='Sheet1')
+        difff = df_marked.compare(df_ori).rename(columns={'self': 'VALID REVISI', 'other': 'ORIGINAL'})
+        column_changed = [column_name[0] for column_name in difff.columns]
+        column_changed = list(set(column_changed))
+        list_all_changed = [] # [row,column_name, value ori, value revisi]
+        for index,row in difff.iterrows():
+            for column_name in column_changed:
+                if row[column_name]['VALID REVISI'] != row[column_name]['ORIGINAL']:
+                    list_all_changed.append([index,column_name,row[column_name]['ORIGINAL'],row[column_name]['VALID REVISI']])
+
+        with open(app.config["EXCEL_UPLOADS"] + "/revisi/" + filename + "-baris-full.json", 'w') as f:
+            json.dump(list_all_changed, f)
+        return render_template(
+            "pages/daftar_file/detail_baris.html",
+            detail_row=list_all_changed,
+            len_data = len(list_all_changed),
+            filename=filename,
+        )
+    with open(
+        os.path.join(
+            app.config["EXCEL_UPLOADS"] + "/revisi/" + filename + "-baris-full.json"
+        ),
+        "r",
+    ) as f:
+        detail_row = json.load(f)
+    return render_template(
+        "pages/daftar_file/detail_baris.html",
+        detail_row=detail_row,
+        len_data = len(detail_row),
         filename=filename,
     )

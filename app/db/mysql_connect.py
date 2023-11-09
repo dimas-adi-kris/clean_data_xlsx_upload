@@ -63,6 +63,9 @@ def ExecuteOnce():
 
     # Commit perubahan ke database
     db_mysql.commit()
+
+
+    
     return db_mysql
 
 
